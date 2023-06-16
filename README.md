@@ -1,3 +1,3 @@
 # ATLAS
-Private codebank for internet infrastructure.
+Public codebank for internet infrastructure.
 Neo-Banking contracts.
