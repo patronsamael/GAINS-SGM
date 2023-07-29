@@ -1,0 +1,139 @@
+import pandas as pd
+import numpy as np
+import yfinance as yf
+
+class BankAccount:
+    def __init__(self, account_number, account_holder, balance, currency):
+        self.account_number = account_number
+        self.account_holder = account_holder
+        self.balance = balance
+        self.currency = currency
+
+    def deposit(self, amount):
+        self.balance += amount
+
+    def withdraw(self, amount):
+        if self.balance >= amount:
+            self.balance -= amount
+        else:
+            print("Insufficient funds")
+
+    def clear_check(self, check_amount):
+        self.withdraw(check_amount)
+        print(f"Check cleared for {check_amount} {self.currency}")
+
+    def transfer_funds(self, target_account, amount):
+        if self.balance >= amount:
+            self.withdraw(amount)
+            target_account.deposit(amount)
+            print(f"Transferred {amount} {self.currency} to Account {target_account.account_number}")
+        else:
+            print("Insufficient funds")
+
+    def invest_funds(self, investment_amount):
+        print(f"Investing {investment_amount} {self.currency} in the stock market")
+        # Add the logic to invest the funds in the stock market
+
+    def display_balance(self):
+        print(f"Account Holder: {self.account_holder}")
+        print(f"Account Number: {self.account_number}")
+        print(f"Balance: {self.balance} {self.currency}")
+
+    def deduct_shipping_costs(self, shipping_cost):
+        if self.balance >= shipping_cost:
+            self.withdraw(shipping_cost)
+            print(f"Deducted shipping cost: {shipping_cost} {self.currency}")
+        else:
+            print("Insufficient funds for shipping costs")
+
+
+class RiskTool:
+    @staticmethod
+    def calculate_covariance(asset1_returns, asset2_returns):
+        covariance = np.cov(asset1_returns, asset2_returns)[0, 1]
+        return covariance
+
+    @staticmethod
+    def calculate_variance(returns):
+        variance = np.var(returns)
+        return variance
+
+
+def get_fiscal_year_data(ticker, year):
+    # Fetch data from Yahoo Finance for the given ticker and year
+    start_date = f"{year}-01-01"
+    end_date = f"{year}-12-31"
+    data = yf.download(ticker, start=start_date, end=end_date)
+    return data
+
+
+def find_lowest_and_highest_prices(data):
+    # Find the lowest and highest prices for the ticker
+    lowest_price = data['Low'].min()
+    highest_price = data['High'].max()
+    return lowest_price, highest_price
+
+
+def find_largest_change_one_day(data):
+    # Calculate the largest change in the market on one day
+    data['Daily_Change'] = data['Close'].diff()
+    largest_change_one_day = data['Daily_Change'].abs().max()
+    return largest_change_one_day
+
+
+def find_largest_change_two_days(data):
+    # Calculate the largest change in the market over two consecutive days
+    data['Two_Day_Change'] = data['Close'].diff(periods=2)
+    largest_change_two_days = data['Two_Day_Change'].abs().max()
+    return largest_change_two_days
+
+
+def calculate_average_moving_trade_volume(data, window=5):
+    # Calculate the average moving trade volume
+    data['Avg_Moving_Trade_Volume'] = data['Volume'].rolling(window=window).mean()
+    avg_moving_trade_volume = data['Avg_Moving_Trade_Volume'].mean()
+    return avg_moving_trade_volume
+
+
+if __name__ == "__main__":
+    # Test the functionalities
+    # Create bank accounts and perform transactions
+    account1 = BankAccount("123456789", "John Doe", 1000.0, "USD")
+    account2 = BankAccount("987654321", "Jane Smith", 500.0, "USD")
+
+    account1.display_balance()
+    account2.display_balance()
+
+    account1.deposit(500.0)
+    account1.display_balance()
+
+    account1.withdraw(200.0)
+    account1.display_balance()
+
+    check_amount = 300.0
+    account1.clear_check(check_amount)
+    account1.display_balance()
+
+    transfer_amount = 400.0
+    account1.transfer_funds(account2, transfer_amount)
+    account1.display_balance()
+    account2.display_balance()
+
+    # Invest funds in the stock market
+    investment_amount = 1000.0
+    account1.invest_funds(investment_amount)
+
+    # Financial data analysis for AFX_X for the fiscal year of 2017
+    ticker = "AFX_X"
+    fiscal_year = 2017
+
+    data = get_fiscal_year_data(ticker, fiscal_year)
+
+    lowest_price, highest_price = find_lowest_and_highest_prices(data)
+    print("Lowest Price:", lowest_price)
+    print("Highest Price:", highest_price)
+
+    largest_change_one_day = find_largest_change_one_day(data)
+    print("Largest Change in One Day:", largest_change_one_day)
+
+    largest_change_two_days = find_largest_change_two_days(data
