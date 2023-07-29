@@ -1,0 +1,92 @@
+class Investment:
+    def __init__(self, investment_id, investor, instrument, quantity, price, investment_date):
+        self.investment_id = investment_id
+        self.investor = investor
+        self.instrument = instrument
+        self.quantity = quantity
+        self.price = price
+        self.investment_date = investment_date
+
+    def __str__(self):
+        return f"Investment ID: {self.investment_id}, Investor: {self.investor}, Instrument: {self.instrument}, Quantity: {self.quantity}, Price: {self.price}, Investment Date: {self.investment_date}"
+
+class InvestmentRegistry:
+    def __init__(self):
+        self.investments = []
+
+    def add_investment(self, investment):
+        self.investments.append(investment)
+
+    def remove_investment_by_id(self, investment_id):
+        self.investments = [investment for investment in self.investments if investment.investment_id != investment_id]
+
+    def get_investment_by_id(self, investment_id):
+        for investment in self.investments:
+            if investment.investment_id == investment_id:
+                return investment
+        return None
+
+    def get_investments_by_investor(self, investor):
+        return [investment for investment in self.investments if investment.investor == investor]
+
+    def get_all_investments(self):
+        return self.investments
+
+class GovernmentInvestment(Investment):
+    def __init__(self, investment_id, investor, instrument, quantity, price, investment_date, government_name):
+        super().__init__(investment_id, investor, instrument, quantity, price, investment_date)
+        self.government_name = government_name
+
+    def __str__(self):
+        return super().__str__() + f", Government: {self.government_name}"
+
+class TradeAndInvestmentRegistry:
+    def __init__(self):
+        self.trades = []
+        self.investments = []
+
+    # ... Add methods to handle trades and investments ...
+
+    def add_investment(self, investment):
+        self.investments.append(investment)
+
+    def get_investment_by_id(self, investment_id):
+        for investment in self.investments:
+            if investment.investment_id == investment_id:
+                return investment
+        return None
+
+    # ... Other methods for investment registry ...
+
+    def get_all_investments(self):
+        return self.investments
+
+if __name__ == "__main__":
+    # Create a trade and investment registry
+    trade_and_investment_registry = TradeAndInvestmentRegistry()
+
+    # Add trades to the registry
+    trade1 = Trade(1, "John Doe", "AAPL", 100, 150.0, "2023-06-15", corporation="ABC Corp")
+    trade2 = Trade(2, "Jane Smith", "GOOG", 50, 2500.0, "2023-06-16", sovereign_wealth_fund="SWF Holdings")
+
+    trade_and_investment_registry.add_trade(trade1)
+    trade_and_investment_registry.add_trade(trade2)
+
+    # Add investments to the registry (including government investments)
+    investment1 = Investment(1, "Investor1", "AAPL", 200, 160.0, "2023-06-17")
+    investment2 = GovernmentInvestment(2, "Investor2", "GOOG", 100, 2550.0, "2023-06-18", government_name="Government1")
+
+    trade_and_investment_registry.add_investment(investment1)
+    trade_and_investment_registry.add_investment(investment2)
+
+    # Get all trades and investments in the registry
+    all_trades = trade_and_investment_registry.get_all_trades()
+    all_investments = trade_and_investment_registry.get_all_investments()
+
+    for trade in all_trades:
+        print(trade)
+
+    for investment in all_investments:
+        print(investment)
+
+    # ... Continue testing and using the registry for your specific use cases ...
