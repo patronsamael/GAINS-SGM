@@ -1,16 +1,16 @@
 1. ZCash - clandestine transactions 
 2. Monero - privacy currency
 3. The Graph Protocol - index platform
-4. XCHF - Digital Swiss Franc - cmon
-5. Matic
+4. XCHF - Digital Swiss Franc - Why not?
+5. Matic - infrastructure development
 6. Stellar Lumens - remittances
 7. QNT - quantum financial netwworks
 8. Sandbox - digital environments for testing before live
-9. Helium HNT - telecom and storage (i have more in person ;)
+9. Helium HNT - telecom and storage (i have more in person, muahahah)
 10. Polymesh - securities 
 11. SUKU - supply chains
 12. PAXG - rare metals 
 13. Solana - distributions 
-14. USDC - dollars, meh. 
-15. Uniswap - for our stock exchange 
+14. USDC - dollars, eh. 
+15. Uniswap - for the DTX stock exchange 
 16. DAI - debt vaults 
