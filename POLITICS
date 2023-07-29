@@ -1,0 +1,44 @@
+# Existing code for TradeAndInvestmentRegistry, Investment, GovernmentInvestment, etc.
+
+class PoliticalEntityInvestment(Investment):
+    def __init__(self, investment_id, investor, instrument, quantity, price, investment_date, political_entity_name):
+        super().__init__(investment_id, investor, instrument, quantity, price, investment_date)
+        self.political_entity_name = political_entity_name
+
+    def __str__(self):
+        return super().__str__() + f", Political Entity: {self.political_entity_name}"
+
+def lobby_for_political_ownership_change():
+    # Collect user input
+    user_name = input("Please enter your name: ")
+    lobbying_purpose = input("State the purpose of your lobbying for political ownership change: ")
+    specific_demands = input("Please provide specific demands you want to advocate for: ")
+
+    # Craft the lobbying message
+    lobbying_message = f"Dear Political Entity,\n\nMy name is {user_name}, and I am writing to lobby for a change in political ownership in the market with the following purpose:\n\n{lobbying_purpose}\n\nI am advocating for the following specific demands:\n\n{specific_demands}\n\nI believe these changes are essential for promoting fairness and transparency in the market.\n\nSincerely,\n{user_name}"
+
+    # Use an external communication tool to send the lobbying message (e.g., email or API integration)
+    # Here, we are just printing the message for demonstration purposes.
+    print("\n--- Lobbying Message ---")
+    print(lobbying_message)
+    print("--- End of Lobbying Message ---")
+
+    # Further actions to follow-up with the lobbying efforts
+    # ...
+
+if __name__ == "__main__":
+    # Create a trade and investment registry
+    trade_and_investment_registry = TradeAndInvestmentRegistry()
+
+    # Add trades and investments to the registry, including PoliticalEntityInvestment
+    trade1 = Trade(1, "John Doe", "AAPL", 100, 150.0, "2023-06-15", corporation="ABC Corp")
+    trade2 = Trade(2, "Jane Smith", "GOOG", 50, 2500.0, "2023-06-16", sovereign_wealth_fund="SWF Holdings")
+
+    political_entity_investment = PoliticalEntityInvestment(3, "Political Entity A", "AAPL", 500, 155.0, "2023-06-17", political_entity_name="Political Entity A")
+
+    trade_and_investment_registry.add_trade(trade1)
+    trade_and_investment_registry.add_trade(trade2)
+    trade_and_investment_registry.add_investment(political_entity_investment)
+
+    # Lobby for a political ownership change
+    lobby_for_political_ownership_change()
