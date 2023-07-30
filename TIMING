@@ -1,0 +1,40 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+def logistic_map(r, x0, num_steps):
+    x_values = [x0]
+    for _ in range(num_steps - 1):
+        x_n = x_values[-1]
+        x_next = r * x_n * (1 - x_n)
+        x_values.append(x_next)
+    return x_values
+
+def financial_sequences(r_values, x0_sequence, num_steps):
+    # Create an empty list to store financial sequences
+    financial_data = []
+
+    for x0 in x0_sequence:
+        x_values = logistic_map(r_values, x0, num_steps)
+        financial_data.append(x_values)
+
+    return np.array(financial_data)
+
+def plot_financial_sequences(r_values, x0_sequence, num_steps):
+    financial_data = financial_sequences(r_values, x0_sequence, num_steps)
+    for r_idx, r in enumerate(r_values):
+        plt.plot(range(num_steps), financial_data[r_idx], label=f"r={r}")
+    
+    plt.xlabel('Time Step')
+    plt.ylabel('Financial Sequence')
+    plt.title('Financial Sequences from the Logistic Map')
+    plt.legend()
+    plt.show()
+
+if __name__ == "__main__":
+    # Set the parameters for the logistic map
+    r_values = [2.5, 3.2, 3.5, 3.8]
+    x0_sequence = [0.2, 0.5, 0.8]
+    num_steps = 100
+
+    # Plot financial sequences for the specified values of r and x0
+    plot_financial_sequences(r_values, x0_sequence, num_steps)
