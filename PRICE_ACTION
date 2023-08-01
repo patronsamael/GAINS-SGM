@@ -1,0 +1,69 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from datetime import datetime
+
+# Function to calculate Euclidean distance between two 3D points
+def euclidean_distance_3d(point1, point2):
+    return np.sqrt(np.sum((point1 - point2)**2))
+
+# Function to calculate Manhattan distance between two 3D points
+def manhattan_distance_3d(point1, point2):
+    return np.sum(np.abs(point1 - point2))
+
+# Function to rotate a 3D point around the origin
+def rotate_3d(point, angle_x, angle_y, angle_z):
+    rotation_matrix = np.array([
+        [np.cos(angle_y)*np.cos(angle_z), -np.cos(angle_y)*np.sin(angle_z), np.sin(angle_y)],
+        [np.cos(angle_x)*np.sin(angle_z) + np.cos(angle_z)*np.sin(angle_x)*np.sin(angle_y),
+         np.cos(angle_x)*np.cos(angle_z) - np.sin(angle_x)*np.sin(angle_y)*np.sin(angle_z),
+         -np.cos(angle_y)*np.sin(angle_x)],
+        [np.sin(angle_x)*np.sin(angle_z) - np.cos(angle_x)*np.cos(angle_z)*np.sin(angle_y),
+         np.cos(angle_z)*np.sin(angle_x) + np.cos(angle_x)*np.sin(angle_y)*np.sin(angle_z),
+         np.cos(angle_x)*np.cos(angle_y)]
+    ])
+    return np.dot(rotation_matrix, point)
+
+# Sample 3D points with timestamps (replace with your own data)
+point1 = np.array([1, 2, 3])
+point2 = np.array([4, 5, 6])
+timestamp1 = datetime(2023, 7, 15, 12, 0, 0)
+timestamp2 = datetime(2023, 7, 15, 12, 0, 10)
+
+# Calculate distances in 3D space
+euclidean_dist_3d = euclidean_distance_3d(point1, point2)
+manhattan_dist_3d = manhattan_distance_3d(point1, point2)
+
+# Calculate time difference between the points
+time_difference = (timestamp2 - timestamp1).total_seconds()
+
+# Scale distances based on the time elapsed
+scaled_euclidean_dist = euclidean_dist_3d / time_difference
+scaled_manhattan_dist = manhattan_dist_3d / time_difference
+
+# Rotate the points in 3D space
+angle_x = np.radians(30)
+angle_y = np.radians(45)
+angle_z = np.radians(60)
+rotated_point1 = rotate_3d(point1, angle_x, angle_y, angle_z)
+rotated_point2 = rotate_3d(point2, angle_x, angle_y, angle_z)
+
+# Visualize the points and scaled distances in 3D space
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter([point1[0], point2[0]], [point1[1], point2[1]], [point1[2], point2[2]], color='b', label='Points')
+ax.scatter([rotated_point1[0], rotated_point2[0]], [rotated_point1[1], rotated_point2[1]], [rotated_point1[2], rotated_point2[2]], color='r', label='Rotated Points')
+ax.plot([point1[0], point2[0]], [point1[1], point2[1]], [point1[2], point2[2]], 'b--', label='Euclidean Distance')
+ax.plot([rotated_point1[0], rotated_point2[0]], [rotated_point1[1], rotated_point2[1]], [rotated_point1[2], rotated_point2[2]], 'r--', label='Rotated Euclidean Distance')
+ax.set_xlabel('X-axis')
+ax.set_ylabel('Y-axis')
+ax.set_zlabel('Z-axis')
+ax.legend()
+plt.title('3D Euclidean Distances, Rotations, and Scaled Distances')
+plt.show()
+
+print(f"Euclidean Distance in 3D: {euclidean_dist_3d:.2f}")
+print(f"Manhattan Distance in 3D: {manhattan_dist_3d:.2f}")
+print(f"Time Difference: {time_difference} seconds")
+print(f"Scaled Euclidean Distance: {scaled_euclidean_dist:.2f} units/second")
+print(f"Scaled Manhattan Distance: {scaled_manhattan_dist:.2f} units/second")
