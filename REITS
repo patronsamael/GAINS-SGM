@@ -1,0 +1,39 @@
+import yfinance as yf
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+def fetch_data(tickers, start_date, end_date):
+    data = yf.download(tickers, start=start_date, end=end_date)["Adj Close"]
+    return data
+
+def plot_time_series(data, title):
+    plt.figure(figsize=(10, 6))
+    for ticker in data.columns:
+        plt.plot(data.index, data[ticker], label=ticker)
+    plt.xlabel("Date")
+    plt.ylabel("Price")
+    plt.title(title)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def main():
+    # Define the tickers for property value and REITs
+    property_ticker = "ZILLOW"  # Replace with the ticker of the property value index you want to fetch
+    reits_ticker = "VNQ"       # Replace with the ticker of the REITs index you want to fetch
+
+    # Define the start and end date for the time series
+    start_date = "2022-01-01"
+    end_date = "2022-07-01"
+
+    # Fetch data for property value and REITs
+    property_data = fetch_data(property_ticker, start_date, end_date)
+    reits_data = fetch_data(reits_ticker, start_date, end_date)
+
+    # Plot time series
+    plot_time_series(property_data, f"{property_ticker} Price Time Series")
+    plot_time_series(reits_data, f"{reits_ticker} Price Time Series")
+
+if __name__ == "__main__":
+    main()
