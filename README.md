@@ -7,7 +7,9 @@ Banking Structures.
 Trading Mechanisims.
 Whitepaper.
 
-These are the Presentations by Samuel Global Management Limited Liability Corporation (LLC).
+Privately Held and Owned by Samuel Global Management Limited Liability Corporation [LLC]
+
+These are the Presentations by Samuel Global Management Limited Liability Corporation [LLC].
 1. DXC Exchange System : https://drive.google.com/file/d/19KkLaNXfKHY0B5r-TZb44CaZ7NP10Ph2/view?usp=sharing
 2. DTO System : https://drive.google.com/file/d/1SJkIMgMQvAATIZw19zkKkZB8IfcTkmT8/view?usp=sharing
 3. DCM Asset Class : https://drive.google.com/file/d/1z0uBv5XeMHx7JkyNHfCjsaBvGD99l_mD/view?usp=sharing
