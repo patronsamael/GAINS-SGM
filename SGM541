@@ -1,0 +1,203 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract TMS541 is ERC20, Ownable {
+    uint256 public constant INITIAL_SUPPLY = 1_000_000_000_000_000_000_000_000; // Initial supply: 1 trillion tokens
+    uint8 public constant DECIMALS = 18; // Standard decimals
+
+    uint256 public pegPercentage; // The percentage pegged to the treasury bond markets
+
+    constructor() ERC20("TMS541", "TMS541") {
+        _mint(msg.sender, INITIAL_SUPPLY);
+        pegPercentage = 100; // Initialize the peg percentage to 100% (1:1 peg)
+    }
+
+    function mint(address account, uint256 amount) external onlyOwner {
+        require(account != address(0), "Mint to the zero address");
+        _mint(account, amount);
+    }
+
+    function burn(uint256 amount) external onlyOwner {
+        _burn(msg.sender, amount);
+    }
+
+    function setPegPercentage(uint256 percentage) external onlyOwner {
+        require(percentage > 0, "Percentage must be greater than 0");
+        pegPercentage = percentage;
+    }
+
+    function getRotatingPeg() external view returns (uint256) {
+        // Implement your logic to calculate the rotating peg based on treasury bond data here
+        // Example: Calculate the rotating peg as the average of the last 7 days' treasury bond percentages
+        uint256 rotatingPeg = calculateAverageBondPercentage(); // Replace with your logic
+        return rotatingPeg;
+    }
+
+    // Implement your logic to calculate the average treasury bond percentage here
+    function calculateAverageBondPercentage() internal view returns (uint256) {
+        // Replace with your logic to fetch and calculate the average bond percentage
+        // from the treasury bond markets of 197 countries.
+        // This function should return the calculated average bond percentage.
+        // For demonstration purposes, we'll return a static value of 1%.
+        return 100; // 1% (100 basis points)
+    }
+}
+
+contract ETB541 {
+    TMS541 public stablecoin; // Reference to the TMS541 contract
+    address public owner;
+
+    mapping(address => uint256) public bankBalances;
+    mapping(address => mapping(address => uint256)) public digitalAssets;
+    mapping(address => uint256) public leverageDebt;
+    mapping(address => uint256) public fiatComposites; // User's fiat composite balances
+
+    event Deposit(address indexed user, uint256 amount);
+    event Withdrawal(address indexed user, uint256 amount);
+    event DigitalAssetPurchased(address indexed buyer, address indexed seller, uint256 amount);
+    event DigitalAssetSold(address indexed seller, address indexed buyer, uint256 amount);
+    event LeverageBorrowed(address indexed user, uint256 amount);
+    event LeverageRepaid(address indexed user, uint256 amount);
+    event FiatCompositePurchased(address indexed user, uint256 amount);
+    event FiatCompositeSold(address indexed user, uint256 amount);
+
+    uint256 public constant MAX_LEVERAGE = 190; // Maximum leverage allowed
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
+    }
+
+    constructor(TMS541 _stablecoin) {
+        stablecoin = _stablecoin;
+        owner = msg.sender;
+    }
+
+    function deposit(uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(stablecoin.balanceOf(msg.sender) >= amount, "Insufficient TMS541 balance");
+
+        // Transfer TMS541 tokens to this contract
+        require(stablecoin.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+
+        // Update the bank account balance
+        bankBalances[msg.sender] += amount;
+
+        emit Deposit(msg.sender, amount);
+    }
+
+    function withdraw(uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(bankBalances[msg.sender] >= amount, "Insufficient bank account balance");
+
+        // Transfer TMS541 tokens back to the user
+        require(stablecoin.transfer(msg.sender, amount), "Transfer failed");
+
+        // Update the bank account balance
+        bankBalances[msg.sender] -= amount;
+
+        emit Withdrawal(msg.sender, amount);
+    }
+
+    function getBankBalance() external view returns (uint256) {
+        return bankBalances[msg.sender];
+    }
+
+    function purchaseDigitalAsset(address seller, uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(bankBalances[msg.sender] >= amount, "Insufficient bank account balance");
+        require(digitalAssets[seller][msg.sender] >= amount, "Insufficient digital asset balance");
+
+        // Transfer TMS541 tokens from the buyer to the seller
+        bankBalances[msg.sender] -= amount;
+        bankBalances[seller] += amount;
+
+        // Transfer the digital asset from the seller to the buyer
+        digitalAssets[seller][msg.sender] -= amount;
+        digitalAssets[msg.sender][seller] += amount;
+
+        emit DigitalAssetPurchased(msg.sender, seller, amount);
+    }
+
+    function sellDigitalAsset(address buyer, uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(bankBalances[buyer] >= amount, "Buyer has insufficient bank account balance");
+        require(digitalAssets[msg.sender][buyer] >= amount, "Insufficient digital asset balance");
+
+        // Transfer TMS541 tokens from the seller to the buyer
+        bankBalances[buyer] -= amount;
+        bankBalances[msg.sender] += amount;
+
+        // Transfer the digital asset from the buyer to the seller
+        digitalAssets[msg.sender][buyer] -= amount;
+        digitalAssets[buyer][msg.sender] += amount;
+
+        emit DigitalAssetSold(msg.sender, buyer, amount);
+    }
+
+    function borrowLeverage(uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(leverageDebt[msg.sender] == 0, "You have an existing leverage debt");
+
+        uint256 maxBorrow = bankBalances[msg.sender] * MAX_LEVERAGE;
+        require(amount <= maxBorrow, "Exceeds maximum leverage limit");
+
+        // Update leverage debt
+        leverageDebt[msg.sender] = amount;
+
+        // Increase the user's bank balance
+        bankBalances[msg.sender] += amount;
+
+        emit LeverageBorrowed(msg.sender, amount);
+    }
+
+    function repayLeverage(uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(leverageDebt[msg.sender] >= amount, "Insufficient leverage debt");
+
+        // Reduce leverage debt
+        leverageDebt[msg.sender] -= amount;
+
+        // Decrease the user's bank balance
+        bankBalances[msg.sender] -= amount;
+
+        emit LeverageRepaid(msg.sender, amount);
+    }
+
+    function purchaseFiatComposite(uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(bankBalances[msg.sender] >= amount, "Insufficient bank account balance");
+
+        // Update the user's fiat composite balance
+        fiatComposites[msg.sender] += amount;
+
+        // Deduct the corresponding TMS541 tokens
+        bankBalances[msg.sender] -= amount;
+
+        emit FiatCompositePurchased(msg.sender, amount);
+    }
+
+    function sellFiatComposite(uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(fiatComposites[msg.sender] >= amount, "Insufficient fiat composite balance");
+
+        // Transfer the corresponding TMS541 tokens to the user
+        bankBalances[msg.sender] += amount;
+
+        // Reduce the user's fiat composite balance
+        fiatComposites[msg.sender] -= amount;
+
+        emit FiatCompositeSold(msg.sender, amount);
+    }
+}
+
+contract SGM541 is TMS541, ETB541, Ownable {
+    constructor() TMS541() ETB541(TMS541(address(this))) {
+        // Mr. Jonathan Ben Samuel is the owner of the Reserve and manager of the Treasury
+        transferReserveOwnership(address(0xYourJonathanBenSamuelAddressHere));
+        grantTreasuryManager(address(0xYourJonathanBenSamuelAddressHere));
+    }
+}
