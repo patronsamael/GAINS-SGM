@@ -3,6 +3,36 @@ pragma solidity ^0.8.0;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
+contract Treasury {
+    address public owner;
+    mapping(address => uint256) public treasuryBalances;
+
+    event TreasuryDeposit(address indexed user, uint256 amount);
+    event TreasuryWithdraw(address indexed user, uint256 amount);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function depositToTreasury(address user, uint256 amount) external onlyOwner {
+        require(amount > 0, "Amount must be greater than 0");
+        treasuryBalances[user] += amount;
+        emit TreasuryDeposit(user, amount);
+    }
+
+    function withdrawFromTreasury(address user, uint256 amount) external onlyOwner {
+        require(amount > 0, "Amount must be greater than 0");
+        require(treasuryBalances[user] >= amount, "Insufficient treasury balance");
+        treasuryBalances[user] -= amount;
+        emit TreasuryWithdraw(user, amount);
+    }
+}
+
 contract StableCoin {
     string public name = "Digital Software Exchange";
     string public symbol = "DSX";
@@ -21,30 +51,19 @@ contract StableCoin {
 
     // Fiat currency address and exchange rate
     address public fiatCurrency;
-    uint256 public exchangeRate; // StableCoin to FiatCurrency rate (e.g., 1 MSC = 1 USD)
+    uint256 public exchangeRate; // StableCoin to FiatCurrency rate (e.g., 1 DSX = 1 USD, EUR, CHF, CNY, RUB, GBP, AUD, RAND, 187 COUNTRIES)
 
     // Depository balances
     mapping(address => uint256) public depositoryBalances;
 
-    // Treasury balances
-    mapping(address => uint256) public treasuryBalances;
-
     // Custodial services
     mapping(address => bool) public custodialServices;
 
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-    event Mint(address indexed to, uint256 value);
-    event Burn(address indexed from, uint256 value);
-    event Swap(address indexed user, uint256 stablecoinAmount, uint256 fiatAmount);
-    event Deposit(address indexed user, uint256 amount);
-    event Withdraw(address indexed user, uint256 amount);
-    event TreasuryDeposit(address indexed user, uint256 amount);
-    event TreasuryWithdraw(address indexed user, uint256 amount);
-    event AddCustodialService(address indexed custodialService);
-    event RemoveCustodialService(address indexed custodialService);
-    event SetOriginator(address indexed originator);
-    event ExecuteOriginatorTransfer(address indexed from, address indexed to, uint256 amount);
+    // Digital Debit Card balances
+    mapping(address => uint256) public cardBalances;
+
+    // Separate Treasury contract
+    Treasury public treasury;
 
     modifier onlyOwnerOrOriginator() {
         require(msg.sender == owner || msg.sender == originator, "Only the owner or originator can call this function");
@@ -72,181 +91,144 @@ contract StableCoin {
 
         // Set an initial target price (adjust as needed)
         targetPrice = 1000000; // Example: $1.00
+
+        // Initialize the Treasury contract
+        treasury = new Treasury();
     }
 
     function setOriginator(address _originator) external onlyOwner {
         require(_originator != address(0), "Invalid originator address");
         originator = _originator;
-        emit SetOriginator(_originator);
     }
 
-    function transfer(address to, uint256 value) external returns (bool success) {
-        require(to != address(0), "Invalid address");
-        require(balanceOf[msg.sender] >= value, "Insufficient balance");
-        balanceOf[msg.sender] -= value;
-        balanceOf[to] += value;
-        emit Transfer(msg.sender, to, value);
-        return true;
-    }
-
-    function approve(address spender, uint256 value) external returns (bool success) {
-        allowance[msg.sender][spender] = value;
-        emit Approval(msg.sender, spender, value);
-        return true;
-    }
-
-    function transferFrom(address from, address to, uint256 value) external returns (bool success) {
-        require(to != address(0), "Invalid address");
-        require(balanceOf[from] >= value, "Insufficient balance");
-        require(allowance[from][msg.sender] >= value, "Allowance exceeded");
-        balanceOf[from] -= value;
-        balanceOf[to] += value;
-        allowance[from][msg.sender] -= value;
-        emit Transfer(from, to, value);
-        return true;
-    }
-
-    function mint(uint256 amount) external onlyOwnerOrOriginator {
-        totalSupply += amount;
-        balanceOf[msg.sender] += amount;
-        emit Mint(msg.sender, amount);
-    }
-
-    function burn(uint256 amount) external {
-        require(balanceOf[msg.sender] >= amount, "Insufficient balance");
-        totalSupply -= amount;
-        balanceOf[msg.sender] -= amount;
-        emit Burn(msg.sender, amount);
-    }
-
-    function updateStabilityPeg() external onlyOwner {
-        (
-            uint80 roundID,
-            int price,
-            uint startedAt,
-            uint timeStamp,
-            uint80 answeredInRound
-        ) = oracle.latestRoundData();
-
-        require(timeStamp > block.timestamp - 1 days, "Oracle data is outdated");
-
-        // Calculate the average aggregation from the oracle data
-        uint256 newPeg = uint256(price);
-
-        // Update the stability peg
-        targetPrice = newPeg;
-    }
-
-    function setExchangeRate(uint256 newRate) external onlyOwner {
-        exchangeRate = newRate;
-    }
-
-    function swapToUSD(uint256 stablecoinAmount) external {
-        require(stablecoinAmount > 0, "Amount must be greater than 0");
-        require(balanceOf[msg.sender] >= stablecoinAmount, "Insufficient stablecoin balance");
-
-        // Calculate the amount of fiat currency to receive
-        uint256 fiatAmount = (stablecoinAmount * exchangeRate) / (10**uint256(decimals));
-
-        // Update balances
-        balanceOf[msg.sender] -= stablecoinAmount;
-        balanceOf[fiatCurrency] += fiatAmount;
-
-        emit Transfer(msg.sender, fiatCurrency, fiatAmount);
-        emit Swap(msg.sender, stablecoinAmount, fiatAmount);
-    }
-
-    function deposit(uint256 amount) external {
+    // Load funds onto the digital debit card
+    function loadCard(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0");
         require(balanceOf[msg.sender] >= amount, "Insufficient balance");
 
-        // Update user's stablecoin balance and depository balance
+        // Update user's stablecoin balance and card balance
         balanceOf[msg.sender] -= amount;
-        depositoryBalances[msg.sender] += amount;
+        cardBalances[msg.sender] += amount;
 
         emit Transfer(msg.sender, address(this), amount);
-        emit Deposit(msg.sender, amount);
     }
 
-    function withdraw(uint256 amount) external {
+    // Spend funds from the digital debit card
+    function spendFromCard(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0");
-        require(depositoryBalances[msg.sender] >= amount, "Insufficient depository balance");
+        require(cardBalances[msg.sender] >= amount, "Insufficient card balance");
 
-        // Update user's stablecoin balance and depository balance
+        // Update card balance and transfer funds back to user
+        cardBalances[msg.sender] -= amount;
         balanceOf[msg.sender] += amount;
-        depositoryBalances[msg.sender] -= amount;
 
         emit Transfer(address(this), msg.sender, amount);
-        emit Withdraw(msg.sender, amount);
     }
 
-    function treasuryDeposit(uint256 amount) external onlyOwnerOrOriginator {
+    // Check the balance of the digital debit card
+    function getCardBalance() external view returns (uint256) {
+        return cardBalances[msg.sender];
+    }
+
+    // Deposit stablecoins into the treasury
+    function treasuryDeposit(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0");
         require(balanceOf[msg.sender] >= amount, "Insufficient balance");
 
-        // Update owner's stablecoin balance and treasury balance
+        // Update user's stablecoin balance and deposit to the Treasury contract
         balanceOf[msg.sender] -= amount;
-        treasuryBalances[msg.sender] += amount;
+        treasury.depositToTreasury(msg.sender, amount);
 
         emit Transfer(msg.sender, address(this), amount);
-        emit TreasuryDeposit(msg.sender, amount);
     }
 
+    // Withdraw stablecoins from the treasury
     function treasuryWithdraw(uint256 amount) external onlyOwnerOrOriginator {
         require(amount > 0, "Amount must be greater than 0");
-        require(treasuryBalances[msg.sender] >= amount, "Insufficient treasury balance");
+        require(treasury.treasuryBalances(msg.sender) >= amount, "Insufficient treasury balance");
 
-        // Update treasury balance and owner's stablecoin balance
-        treasuryBalances[msg.sender] -= amount;
+        // Withdraw from the Treasury contract and update user's stablecoin balance
+        treasury.withdrawFromTreasury(msg.sender, amount);
         balanceOf[msg.sender] += amount;
 
         emit Transfer(address(this), msg.sender, amount);
-        emit TreasuryWithdraw(msg.sender, amount);
     }
 
-    function addCustodialService(address custodialService) external onlyOwner {
-        require(custodialService != address(0), "Invalid address");
-        custodialServices[custodialService] = true;
-        emit AddCustodialService(custodialService);
-    }
+    // Transfer stablecoins to another address
+    function transfer(address to, uint256 amount) external returns (bool) {
+        require(to != address(0), "Invalid address");
+        require(amount > 0, "Amount must be greater than 0");
+        require(balanceOf[msg.sender] >= amount, "Insufficient balance");
+        require(balanceOf[to] + amount >= balanceOf[to], "Overflow detected");
 
-    function removeCustodialService(address custodialService) external onlyOwner {
-        require(custodialServices[custodialService], "Not a custodial service");
-        custodialServices[custodialService] = false;
-        emit RemoveCustodialService(custodialService);
-    }
-
-    function executeCustodialTransfer(address from, address to, uint256 amount) external {
-        require(custodialServices[msg.sender], "Not a custodial service");
-        require(balanceOf[from] >= amount, "Insufficient balance");
-
-        // Perform the custodial transfer
-        balanceOf[from] -= amount;
+        balanceOf[msg.sender] -= amount;
         balanceOf[to] += amount;
 
-        emit Transfer(from, to, amount);
+        emit Transfer(msg.sender, to, amount);
+        return true;
     }
 
-    function executeOriginatorTransfer(address from, address to, uint256 amount) external onlyOwnerOrOriginator {
-        require(balanceOf[from] >= amount, "Insufficient balance");
+    // ... (other contract functions)
+}
 
-        // Perform the originator transfer
-        balanceOf[from] -= amount;
-        balanceOf[to] += amount;
-
-        emit Transfer(from, to, amount);
-        emit ExecuteOriginatorTransfer(from, to, amount);
+contract TMS541 is StableCoin {
+    struct Client {
+        address addr;
+        uint256 balance;
     }
 
-    function getDepositoryBalance(address user) external view returns (uint256) {
-        return depositoryBalances[user];
+    mapping(address => Client) public clients;
+
+    event ClientAdded(address indexed addr);
+    event ClientRemoved(address indexed addr);
+
+    modifier onlyClient() {
+        require(clients[msg.sender].addr == msg.sender, "Only authorized clients can call this function");
+        _;
     }
 
-    function getTreasuryBalance(address user) external view onlyOwner returns (uint256) {
-        return treasuryBalances[user];
+    function addClient(address clientAddress) external onlyOwner {
+        clients[clientAddress] = Client(clientAddress, 0);
+        emit ClientAdded(clientAddress);
     }
 
-    function isCustodialService(address user) external view returns (bool) {
-        return custodialServices[user];
+    function removeClient(address clientAddress) external onlyOwner {
+        delete clients[clientAddress];
+        emit ClientRemoved(clientAddress);
+    }
+
+    function transferToClient(address clientAddress, uint256 amount) external onlyClient {
+        require(amount > 0, "Amount must be greater than 0");
+        require(balanceOf[msg.sender] >= amount, "Insufficient balance");
+
+        // Transfer stablecoins from the sender to the client's balance
+        balanceOf[msg.sender] -= amount;
+        clients[clientAddress].balance += amount;
+
+        emit Transfer(msg.sender, clientAddress, amount);
+    }
+
+    function transferFromClient(address clientAddress, uint256 amount) external onlyClient {
+        require(amount > 0, "Amount must be greater than 0");
+        require(clients[clientAddress].balance >= amount, "Insufficient client balance");
+
+        // Transfer stablecoins from the client's balance to the sender
+        clients[clientAddress].balance -= amount;
+        balanceOf[msg.sender] += amount;
+
+        emit Transfer(clientAddress, msg.sender, amount);
+    }
+
+    function pay(address recipient, uint256 amount) external returns (bool) {
+        require(recipient != address(0), "Invalid recipient address");
+        require(amount > 0, "Amount must be greater than 0");
+        require(balanceOf[msg.sender] >= amount, "Insufficient balance");
+
+        // Transfer stablecoins from the sender to the recipient
+        balanceOf[msg.sender] -= amount;
+        balanceOf[recipient] += amount;
+
+        emit Transfer(msg.sender, recipient, amount);
+        return true;
     }
 }
