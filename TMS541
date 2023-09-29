@@ -34,8 +34,8 @@ contract Treasury {
 }
 
 contract StableCoin {
-    string public name = "Digital Software Exchange";
-    string public symbol = "DSX";
+    string public name = "Dragases System Ozman";
+    string public symbol = "DSO";
     uint8 public decimals = 18;
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf;
