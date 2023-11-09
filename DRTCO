@@ -3,9 +3,9 @@ pragma solidity ^0.8.0;
 
 contract DRTCO {
     // ERC-20 Token
-    string public name = "MyToken";
-    string public symbol = "MTK";
-    uint256 public totalSupply = 1000000;
+    string public name = "Dragases System Ozhuman";
+    string public symbol = "DSO";
+    uint256 public totalSupply = 50,731,323,435,146,100,000,000,000,000,000,000.00;
     uint8 public decimals = 18;
 
     mapping(address => uint256) public balanceOf;
@@ -13,15 +13,180 @@ contract DRTCO {
 
     // Custodial System
     mapping(address => uint256) public custodialBalances;
+    class CustodialSystem:
+    def __init__(self):
+        self.accounts = {}
+
+    def create_account(self, account_id):
+        if account_id not in self.accounts:
+            self.accounts[account_id] = 0
+            print(f"Custodial account created for ID {account_id}")
+
+    def deposit(self, account_id, amount):
+        if account_id in self.accounts and amount > 0:
+            self.accounts[account_id] += amount
+            print(f"Deposited ${amount} into Custodial account {account_id}. New balance: ${self.accounts[account_id]}")
+        else:
+            print("Invalid account or deposit amount.")
+
+    def withdraw(self, account_id, amount):
+        if account_id in self.accounts and amount > 0 and amount <= self.accounts[account_id]:
+            self.accounts[account_id] -= amount
+            print(f"Withdrew ${amount} from Custodial account {account_id}. New balance: ${self.accounts[account_id]}")
+        else:
+            print("Invalid account, insufficient balance, or invalid withdrawal amount.")
+
+    def check_balance(self, account_id):
+        if account_id in self.accounts:
+            print(f"Balance in Custodial account {account_id}: ${self.accounts[account_id]}")
+        else:
+            print("Invalid account.")
+
+# Example Usage:
+custodial_system = CustodialSystem()
+
+# Create custodial accounts
+custodial_system.create_account("C1")
+custodial_system.create_account("C2")
+
+# Deposit and withdraw
+custodial_system.deposit("C1", 1000)
+custodial_system.withdraw("C1", 500)
+
+# Check balance
+custodial_system.check_balance("C1")
+custodial_system.check_balance("C3")  # Non-existing account
+
 
     // Treasury System
     mapping(address => uint256) public treasuryBalances;
+class TreasurySystem:
+    def __init__(self):
+        self.balance = 0
+
+    def deposit(self, amount):
+        if amount > 0:
+            self.balance += amount
+            print(f"Deposited ${amount} into the treasury. New balance: ${self.balance}")
+        else:
+            print("Invalid deposit amount.")
+
+    def withdraw(self, amount):
+        if amount > 0 and amount <= self.balance:
+            self.balance -= amount
+            print(f"Withdrew ${amount} from the treasury. New balance: ${self.balance}")
+        else:
+            print("Invalid withdrawal amount or insufficient balance.")
+
+    def check_balance(self):
+        print(f"Treasury balance: ${self.balance}")
+
+# Example Usage:
+treasury_system = TreasurySystem()
+
+# Deposit and withdraw from the treasury
+treasury_system.deposit(1000000)
+treasury_system.withdraw(500000)
+
+# Check treasury balance
+treasury_system.check_balance()
+
 
     // Repository
     mapping(address => uint256) public repositoryBalances;
+class Repository:
+    def __init__(self):
+        self.items = {}
+
+    def add_item(self, item_id, item_data):
+        if item_id not in self.items:
+            self.items[item_id] = item_data
+            print(f"Item {item_id} added to the repository.")
+
+    def get_item(self, item_id):
+        if item_id in self.items:
+            return self.items[item_id]
+        else:
+            print(f"Item {item_id} not found in the repository.")
+            return None
+
+    def list_items(self):
+        print("Items in the repository:")
+        for item_id, item_data in self.items.items():
+            print(f"ID: {item_id}, Data: {item_data}")
+
+# Example Usage:
+repository = Repository()
+
+# Add items to the repository
+repository.add_item(1, "Data for Item 1")
+repository.add_item(2, "Data for Item 2")
+
+# Get and display an item
+item_data = repository.get_item(1)
+if item_data:
+    print(f"Data for Item 1: {item_data}")
+
+# List all items in the repository
+repository.list_items()
+
 
     // Origination System
+class OriginationSystem:
+    def __init__(self):
+        self.origination_records = {}
+        self.next_id = 1
+
+    def originate_item(self, item_data):
+        origination_id = self.next_id
+        self.origination_records[origination_id] = item_data
+        self.next_id += 1
+        print(f"Item originated with ID {origination_id}.")
+
+    def get_item_data(self, origination_id):
+        if origination_id in self.origination_records:
+            return self.origination_records[origination_id]
+        else:
+            print(f"Item with ID {origination_id} not found.")
+            return None
+
+    def list_originations(self):
+        print("Origination records:")
+        for origination_id, item_data in self.origination_records.items():
+            print(f"ID: {origination_id}, Data: {item_data}")
+
+# Example Usage:
+origination_system = OriginationSystem()
+
+# Originate new items
+origination_system.originate_item("Data for Item 1")
+origination_system.originate_item("Data for Item 2")
+
+# Get and display item data
+item_data = origination_system.get_item_data(1)
+if item_data:
+    print(f"Data for Item 1: {item_data}")
+
+# List all origination records
+origination_system.list_originations()
+
     // Define logic for liquidity origination
+class OriginationSystem:
+    def __init__(self, initial_liquidity=100000):
+        self.origination_records = {}
+        self.next_id = 1
+        self.liquidity = initial_liquidity
+ def originate_item(self, item_data, origination_cost):
+        if origination_cost > self.liquidity:
+            print("Insufficient liquidity to originate the item.")
+            return
+
+        origination_id = self.next_id
+        self.origination_records[origination_id] = item_data
+        self.next_id += 1
+        self.liquidity -= origination_cost
+        print(f"Item originated with ID {origination_id}. Remaining liquidity: ${self.liquidity}")
+
 
     constructor() {
         balanceOf[msg.sender] = totalSupply;
@@ -31,10 +196,77 @@ contract DRTCO {
     // Deposit and Withdraw functions for Custodial System
     function depositToCustodial(uint256 amount) public {
         // Deposit logic for Custodial System
+class CustodialSystem:
+    def __init__(self):
+        self.accounts = {}
+
+    def create_account(self, account_id):
+        if account_id not in self.accounts:
+            self.accounts[account_id] = 0
+            print(f"Custodial account created for ID {account_id}")
+
+    def deposit(self, account_id, amount):
+        if account_id in self.accounts and amount > 0:
+            self.accounts[account_id] += amount
+            print(f"Deposited ${amount} into Custodial account {account_id}. New balance: ${self.accounts[account_id]}")
+        else:
+            print("Invalid account or deposit amount.")
+
+    def withdraw(self, account_id, amount):
+        if account_id in self.accounts and amount > 0 and amount <= self.accounts[account_id]:
+            self.accounts[account_id] -= amount
+            print(f"Withdrew ${amount} from Custodial account {account_id}. New balance: ${self.accounts[account_id]}")
+        else:
+            print("Invalid account, insufficient balance, or invalid withdrawal amount.")
+
+    def check_balance(self, account_id):
+        if account_id in self.accounts:
+            print(f"Balance in Custodial account {account_id}: ${self.accounts[account_id]}")
+        else:
+            print("Invalid account.")
+
+# Example Usage with Deposit Logic:
+custodial_system = CustodialSystem()
+
+# Create custodial account
+custodial_system.create_account("C1")
+
+# Deposit funds into the custodial account
+custodial_system.deposit("C1", 1000)
+
+# Check custodial account balance
+custodial_system.check_balance("C1")
+
     }
 
     function withdrawFromCustodial(uint256 amount) public {
         // Withdraw logic for Custodial System
+ def withdraw(self, account_id, amount):
+        if account_id in self.accounts and amount > 0 and amount <= self.accounts[account_id]:
+            self.accounts[account_id] -= amount
+            print(f"Withdrew ${amount} from Custodial account {account_id}. New balance: ${self.accounts[account_id]}")
+        else:
+            print("Invalid account, insufficient balance, or invalid withdrawal amount.")
+
+    def check_balance(self, account_id):
+        if account_id in self.accounts:
+            print(f"Balance in Custodial account {account_id}: ${self.accounts[account_id]}")
+        else:
+            print("Invalid account.")
+
+# Example Usage with Deposit Logic:
+custodial_system = CustodialSystem()
+
+# Create custodial account
+custodial_system.create_account("C1")
+
+# Deposit funds into the custodial account
+custodial_system.deposit("C1", 1000)
+
+# Check custodial account balance
+custodial_system.check_balance("C1")
+
+Regenerate
     }
 
     // Deposit and Withdraw functions for Treasury System
