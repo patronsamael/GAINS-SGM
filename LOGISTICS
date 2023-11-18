@@ -45,6 +45,75 @@ class BankAccount:
             print(f"Deducted shipping cost: {shipping_cost} {self.currency}")
         else:
             print("Insufficient funds for shipping costs")
+import numpy as np
+import pandas as pd
+import yfinance as yf
+
+class Shipping:
+    def __init__(self, container_value, ship_value, goods_value):
+        self.container_value = container_value
+        self.ship_value = ship_value
+        self.goods_value = goods_value
+        self.shipping_indexes = np.array([])
+        self.stock_values = {}
+
+    def calculate_insurance_cost(self):
+        # Placeholder logic for calculating insurance cost based on values
+        total_insurance_cost = self.container_value + self.ship_value + self.goods_value
+        return total_insurance_cost
+
+    def fetch_stock_values(self, symbols):
+        # Fetch real-time stock values for the given symbols using yfinance
+        stock_data = yf.download(symbols, period="1d")["Close"]
+        for symbol in symbols:
+            self.stock_values[symbol] = stock_data[symbol].iloc[-1]
+
+    def calculate_market_value(self, volatility_factor=1.0):
+        # Placeholder logic for calculating overall market value based on stock values and volatility
+        total_stock_value = sum(self.stock_values.values())
+        market_value = total_stock_value * volatility_factor
+        return market_value
+
+    def update_shipping_indexes(self, new_values):
+        # Update the shipping indexes with real-time values
+        self.shipping_indexes = np.append(self.shipping_indexes, new_values)
+
+    def get_real_time_allocation(self):
+        # Placeholder logic for calculating real-time allocation based on shipping indexes
+        if len(self.shipping_indexes) > 0:
+            # Calculate allocation based on the latest shipping indexes
+            allocation = np.random.rand(len(self.shipping_indexes))
+            return allocation
+        else:
+            return np.array([])
+
+# Example usage
+container_value = 50000
+ship_value = 1000000
+goods_value = 200000
+
+shipping_instance = Shipping(container_value, ship_value, goods_value)
+
+# Fetch real-time stock values of shipping companies for the index
+symbols = ['MSC', 'AMKBY', 'HPGLY', 'CICOY']
+shipping_instance.fetch_stock_values(symbols)
+
+# Calculate insurance cost
+insurance_cost = shipping_instance.calculate_insurance_cost()
+print(f"Total Insurance Cost: {insurance_cost}")
+
+# Simulate real-time updates to shipping indexes
+new_values = np.array([150, 155, 160, 158])
+shipping_instance.update_shipping_indexes(new_values)
+
+# Get real-time allocation based on shipping indexes
+allocation = shipping_instance.get_real_time_allocation()
+print(f"Real-time Allocation: {allocation}")
+
+# Calculate overall market value based on stock values and volatility
+market_value = shipping_instance.calculate_market_value(volatility_factor=1.2)
+print(f"Overall Market Value: {market_value}")
+
 
 
 class RiskTool:
@@ -123,9 +192,9 @@ if __name__ == "__main__":
     investment_amount = 1000.0
     account1.invest_funds(investment_amount)
 
-    # Financial data analysis for AFX_X for the fiscal year of 2017
-    ticker = "AFX_X"
-    fiscal_year = 2017
+    # Financial data analysis for MSC for the fiscal year of 2023
+    ticker = "MSC"
+    fiscal_year = 2023
 
     data = get_fiscal_year_data(ticker, fiscal_year)
 
