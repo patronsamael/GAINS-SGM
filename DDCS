@@ -1,0 +1,119 @@
+import numpy as np
+import pandas as pd
+import yfinance as yf
+
+class CustodialSystem:
+    def __init__(self):
+        # Placeholder for custodial system initialization logic
+        pass
+
+    def custodial_function(self):
+        # Placeholder for custodial system functionality
+        pass
+
+class TreasurySystem:
+    def __init__(self):
+        # Placeholder for treasury system initialization logic
+        pass
+
+    def treasury_function(self):
+        # Placeholder for treasury system functionality
+        pass
+
+class Repository:
+    def __init__(self):
+        # Placeholder for repository initialization logic
+        pass
+
+    def repository_function(self):
+        # Placeholder for repository functionality
+        pass
+
+class OriginationSystem:
+    def __init__(self):
+        # Placeholder for origination system initialization logic
+        pass
+
+    def origination_function(self):
+        # Placeholder for origination system functionality
+        pass
+
+class BorrowingRates(CustodialSystem, TreasurySystem, Repository, OriginationSystem):
+    def __init__(self):
+        # Initialize parent classes
+        CustodialSystem.__init__(self)
+        TreasurySystem.__init__(self)
+        Repository.__init__(self)
+        OriginationSystem.__init__(self)
+
+        # ... (previous code)
+
+    def calculate_hash_rates(self, matrix_list, rate_multiplier):
+        return [matrix * rate_multiplier for matrix in matrix_list]
+
+    def print_hash_rates(self, hash_rates, rate_type):
+        for idx, rate in enumerate(hash_rates, start=1):
+            print(f'These are the {rate_type} Matrix Hash Rates #{idx} in Drachma:\n{rate}')
+
+    def compound_investment(self, i, x, r, n, t):
+        return i * (1 + x / (r / n))**(n / t)
+
+    def generate_time_series(self, start_date, end_date, freq='D'):
+        return pd.date_range(start=start_date, end=end_date, freq=freq)
+
+    def fetch_financial_data(self, ticker, start_date, end_date):
+        data = yf.download(ticker, start=start_date, end=end_date)
+        return data
+
+    def calculate_credit_score(self, financial_data):
+        # Example: Calculate credit score based on historical bond yields
+        financial_data['Yield'] = (financial_data['Open'] - financial_data['Close']) / financial_data['Open']
+        average_yield = financial_data['Yield'].mean()
+        normalized_score = 1 - (average_yield - financial_data['Yield'].min()) / (financial_data['Yield'].max() - financial_data['Yield'].min())
+        return normalized_score
+
+    def run_borrowing_rates(self):
+        low_rates = self.calculate_hash_rates(self.low_matrices, 0.00005)
+        self.print_hash_rates(low_rates, "Low")
+
+        medium_rates = self.calculate_hash_rates(self.medium_matrices, 0.0005)
+        self.print_hash_rates(medium_rates, "Medium")
+
+        high_rates = self.calculate_hash_rates(self.high_matrices, 0.005)
+        self.print_hash_rates(high_rates, "High")
+
+        print("Master Key Matrix:")
+        for row in self.master_key:
+            print(row)
+
+        # Example usage of compound_investment function
+        i_value = 10000  # Replace with the actual investment capital
+        x_value = 5      # Replace with the volume of individuals (increment of 1)
+        r_value = 3      # Replace with the average interaction per person in the market
+        n_value = 100    # Replace with the number of transactional interactions in the market at dollar values
+        t_value = 1      # Replace with the time spent in the system
+
+        result = self.compound_investment(i_value, x_value, r_value, n_value, t_value)
+        print(f"Compound Investment Result: {result}")
+
+        # Generate a time series for analysis
+        start_date = '2023-01-01'
+        end_date = '2023-12-31'
+        time_series = self.generate_time_series(start_date, end_date)
+        print(f"Time Series:\n{time_series}")
+
+        # Example usage of fetch_financial_data and calculate_credit_score
+        ticker_symbol = 'AAPL'  # Replace with the desired stock symbol
+        financial_data = self.fetch_financial_data(ticker_symbol, start_date, end_date)
+        credit_score = self.calculate_credit_score(financial_data)
+        print(f"Credit Score for {ticker_symbol}: {credit_score}")
+
+        # Example usage of other systems
+        self.custodial_function()
+        self.treasury_function()
+        self.repository_function()
+        self.origination_function()
+
+# Example usage
+borrowing_rates = BorrowingRates()
+borrowing_rates.run_borrowing_rates()
