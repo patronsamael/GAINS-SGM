@@ -5,7 +5,7 @@ contract DRTCO {
     // ERC-20 Token
     string public name = "Dragases System Ozhuman";
     string public symbol = "DSO";
-    uint256 public totalSupply = 66,807,617,445,695,400,000,000,000,000,000,000.00;
+    uint256 public totalSupply = $400,774,683,316,358,000,000,000,000,000,000,000.00;
     uint8 public decimals = 18;
 
     mapping(address => uint256) public balanceOf;
