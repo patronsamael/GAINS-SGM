@@ -293,30 +293,4 @@ custodial_system.deposit("C1", 1000)
 
 # Check custodial account balance
 custodial_system.check_balance("C1")
-
-Regenerate
-    }
-
-    // Deposit and Withdraw functions for Treasury System
-    function depositToTreasury(uint256 amount) public {
-        // Deposit logic for Treasury System
-    }
-
-    function withdrawFromTreasury(uint256 amount) public {
-        // Withdraw logic for Treasury System
-    }
-
-    // Deposit and Withdraw functions for Repository
-    function depositToRepository(uint256 amount) public {
-        // Deposit logic for Repository
-    }
-
-    function withdrawFromRepository(uint256 amount) public {
-        // Withdraw logic for Repository
-    }
-
-    // Originate Liquidity Provisions
-    function originateLiquidityProvisions(uint256 amount) public {
-        // Liquidity origination logic
-    }
 }
