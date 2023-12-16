@@ -1,15 +1,43 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+class DRTCO:
+    def __init__(self):
+        # ERC-20 Token
+        self.name = "Dragases System Ozhuman"
+        self.symbol = "DSO"
+        self.totalSupply = 400774683316358000000000000000000000000000.00
+        self.decimals = 18
 
-contract DRTCO {
-    // ERC-20 Token
-    string public name = "Dragases System Ozhuman";
-    string public symbol = "DSO";
-    uint256 public totalSupply = $400,774,683,316,358,000,000,000,000,000,000,000.00;
-    uint8 public decimals = 18;
+        # Mapping for balance and allowance
+        self.balanceOf = {}
+        self.allowance = {}
 
-    mapping(address => uint256) public balanceOf;
-    mapping(address => mapping(address => uint256)) public allowance;
+    def transfer(self, sender, recipient, amount):
+        if sender not in self.balanceOf:
+            self.balanceOf[sender] = 0
+        if recipient not in self.balanceOf:
+            self.balanceOf[recipient] = 0
+
+        if self.balanceOf[sender] >= amount:
+            self.balanceOf[sender] -= amount
+            self.balanceOf[recipient] += amount
+            print(f"Transferred {amount} DSO from {sender} to {recipient}.")
+        else:
+            print(f"Insufficient balance for {sender} to transfer {amount} DSO.")
+
+# Example Usage
+drtco_contract = DRTCO()
+
+# Set initial balances
+drtco_contract.balanceOf["SenderAddress"] = 1000000
+drtco_contract.balanceOf["RecipientAddress"] = 0
+
+# Perform a transfer
+drtco_contract.transfer("SenderAddress", "RecipientAddress", 500)
+
+# Print balances
+print("Balances after transfer:")
+print(f"Sender Address: {drtco_contract.balanceOf['SenderAddress']} DSO")
+print(f"Recipient Address: {drtco_contract.balanceOf['RecipientAddress']} DSO")
+
 
     // Custodial System
     mapping(address => uint256) public custodialBalances;
