@@ -1,0 +1,60 @@
+import yfinance as yf
+import sqlite3
+
+class LiquidBank:
+    def __init__(self):
+        self.financial_data = {}
+        self.connect_db()
+
+    def fetch_financial_data(self, ticker):
+        data = yf.download(ticker, start="2023-01-01", end="2023-12-31")
+        return data
+
+    def add_financial_data(self, ticker, data):
+        self.financial_data[ticker] = data
+
+    def connect_db(self):
+        self.conn = sqlite3.connect('liquidity_models.db')
+        self.cursor = self.conn.cursor()
+        self.create_table()
+
+    def create_table(self):
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS liquidity_models (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ticker TEXT NOT NULL,
+                model_name TEXT NOT NULL,
+                model_details TEXT,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        self.conn.commit()
+
+    def insert_liquidity_model(self, ticker, model_name, model_details):
+        self.cursor.execute('''
+            INSERT INTO liquidity_models (ticker, model_name, model_details)
+            VALUES (?, ?, ?)
+        ''', (ticker, model_name, model_details))
+        self.conn.commit()
+
+    def get_liquidity_models(self):
+        self.cursor.execute('SELECT * FROM liquidity_models')
+        models = self.cursor.fetchall()
+        return models
+
+    def add_investment_pair(self, ticker_1, ticker_2, market_price):
+        # Implement investment pairing logic here
+        pass
+
+# Example usage:
+bank = LiquidBank()
+
+# Fetch financial data for Apple (AAPL)
+apple_data = bank.fetch_financial_data("AAPL")
+bank.add_financial_data("AAPL", apple_data)
+
+# Insert liquidity model
+bank.insert_liquidity_model("AAPL", "Model_A", "Details about Model_A")
+
+# Add investment pair
+bank.add_investment_pair("AAPL", "SomeBondTicker", 100.00)
