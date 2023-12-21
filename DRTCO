@@ -3,7 +3,7 @@ class DRTCO:
         # ERC-20 Token
         self.name = "Dragases System Ozhuman"
         self.symbol = "DSO"
-        self.totalSupply = 400774683316358000000000000000000000000000.00
+        self.totalSupply = 400803252946060000000000000000000000.00
         self.decimals = 18
 
         # Mapping for balance and allowance
