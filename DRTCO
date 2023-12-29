@@ -1,8 +1,8 @@
 class DRTCO:
     def __init__(self):
         # ERC-20 Token
-        self.name = "Dragases System Ozhuman"
-        self.symbol = "DSO"
+        self.name = "Orthodox System Ozhumanill"
+        self.symbol = "OSO"
         self.totalSupply = 400803252946060000000000000000000000.00
         self.decimals = 18
 
@@ -27,7 +27,7 @@ class DRTCO:
 drtco_contract = DRTCO()
 
 # Set initial balances
-drtco_contract.balanceOf["SenderAddress"] = 1000000
+drtco_contract.balanceOf["SenderAddress"] = 100000000000000000000
 drtco_contract.balanceOf["RecipientAddress"] = 0
 
 # Perform a transfer
@@ -38,10 +38,7 @@ print("Balances after transfer:")
 print(f"Sender Address: {drtco_contract.balanceOf['SenderAddress']} DSO")
 print(f"Recipient Address: {drtco_contract.balanceOf['RecipientAddress']} DSO")
 
-
-    // Custodial System
-    mapping(address => uint256) public custodialBalances;
-    class CustodialSystem:
+class CustodialSystem:
     def __init__(self):
         self.accounts = {}
 
@@ -86,8 +83,6 @@ custodial_system.check_balance("C1")
 custodial_system.check_balance("C3")  # Non-existing account
 
 
-    // Treasury System
-    mapping(address => uint256) public treasuryBalances;
 class TreasurySystem:
     def __init__(self):
         self.balance = 0
@@ -120,8 +115,6 @@ treasury_system.withdraw(500000)
 treasury_system.check_balance()
 
 
-    // Repository
-    mapping(address => uint256) public repositoryBalances;
 class Repository:
     def __init__(self):
         self.items = {}
@@ -159,7 +152,6 @@ if item_data:
 repository.list_items()
 
 
-    // Origination System
 class OriginationSystem:
     def __init__(self):
         self.origination_records = {}
@@ -198,13 +190,12 @@ if item_data:
 # List all origination records
 origination_system.list_originations()
 
-    // Define logic for liquidity origination
 class OriginationSystem:
     def __init__(self, initial_liquidity=100000):
         self.origination_records = {}
         self.next_id = 1
         self.liquidity = initial_liquidity
- def originate_item(self, item_data, origination_cost):
+    def originate_item(self, item_data, origination_cost):
         if origination_cost > self.liquidity:
             print("Insufficient liquidity to originate the item.")
             return
@@ -216,14 +207,6 @@ class OriginationSystem:
         print(f"Item originated with ID {origination_id}. Remaining liquidity: ${self.liquidity}")
 
 
-    constructor() {
-        balanceOf[msg.sender] = totalSupply;
-        // Initialize other systems...
-    }
-
-    // Deposit and Withdraw functions for Custodial System
-    function depositToCustodial(uint256 amount) public {
-        // Deposit logic for Custodial System
 class CustodialSystem:
     def __init__(self):
         self.accounts = {}
@@ -265,18 +248,16 @@ custodial_system.deposit("C1", 1000)
 # Check custodial account balance
 custodial_system.check_balance("C1")
 
-    }
+    
 
-    function withdrawFromCustodial(uint256 amount) public {
-        // Withdraw logic for Custodial System
- def withdraw(self, account_id, amount):
+def withdraw(self, account_id, amount):
         if account_id in self.accounts and amount > 0 and amount <= self.accounts[account_id]:
             self.accounts[account_id] -= amount
             print(f"Withdrew ${amount} from Custodial account {account_id}. New balance: ${self.accounts[account_id]}")
         else:
             print("Invalid account, insufficient balance, or invalid withdrawal amount.")
 
-    def check_balance(self, account_id):
+def check_balance(self, account_id):
         if account_id in self.accounts:
             print(f"Balance in Custodial account {account_id}: ${self.accounts[account_id]}")
         else:
@@ -293,4 +274,4 @@ custodial_system.deposit("C1", 1000)
 
 # Check custodial account balance
 custodial_system.check_balance("C1")
-}
+
