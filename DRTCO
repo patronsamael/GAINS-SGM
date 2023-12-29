@@ -19,9 +19,9 @@ class DRTCO:
         if self.balanceOf[sender] >= amount:
             self.balanceOf[sender] -= amount
             self.balanceOf[recipient] += amount
-            print(f"Transferred {amount} DSO from {sender} to {recipient}.")
+            print(f"Transferred {amount} OSO from {sender} to {recipient}.")
         else:
-            print(f"Insufficient balance for {sender} to transfer {amount} DSO.")
+            print(f"Insufficient balance for {sender} to transfer {amount} OSO.")
 
 # Example Usage
 drtco_contract = DRTCO()
@@ -35,8 +35,8 @@ drtco_contract.transfer("SenderAddress", "RecipientAddress", 500)
 
 # Print balances
 print("Balances after transfer:")
-print(f"Sender Address: {drtco_contract.balanceOf['SenderAddress']} DSO")
-print(f"Recipient Address: {drtco_contract.balanceOf['RecipientAddress']} DSO")
+print(f"Sender Address: {drtco_contract.balanceOf['SenderAddress']} OSO")
+print(f"Recipient Address: {drtco_contract.balanceOf['RecipientAddress']} OSO")
 
 class CustodialSystem:
     def __init__(self):
