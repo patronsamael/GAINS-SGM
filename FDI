@@ -1,0 +1,164 @@
+# Import libraries
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+from statsmodels.formula.api import ols
+import scipy.stats as st
+
+# Assume you have a function to retrieve live government transactions data
+def get_live_transactions_data():
+    # Implement your logic to fetch real-time data from an API or other source
+    # Replace this placeholder with your actual data retrieval code
+    live_data = pd.read_csv('your_live_data_source.csv')
+    return live_data
+
+# Load live government transactions data
+live_fdi_data = get_live_transactions_data()
+
+# Explore the structure of the live dataset
+print(live_fdi_data.head())
+
+# Basic summary statistics
+live_summary_stats = live_fdi_data.describe()
+print(live_summary_stats)
+
+# Visualize the live data distribution
+sns.pairplot(live_fdi_data)
+plt.show()
+
+# Correlation matrix for live data
+live_correlation_matrix = live_fdi_data.corr()
+sns.heatmap(live_correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Correlation Matrix - Live Data')
+plt.show()
+
+# Simple linear regression for live data
+live_model = ols('dependent_col ~ independent_col', data=live_fdi_data).fit()
+print(live_model.summary())
+
+# Hypothesis testing for live data
+live_t_stat, live_p_value = st.ttest_ind(live_fdi_data['col1'], live_fdi_data['col2'])
+print(f'T-Statistic: {live_t_stat}, P-Value: {live_p_value}')
+
+# Additional analysis and visualizations for live data...
+
+# Save or display the results for live data
+# plt.savefig('live_output_visualization.png')
+# live_summary_stats.to_csv('live_summary_stats.csv', index=False)
+
+# Assuming live_fdi_data is loaded and contains the necessary columns
+
+# Calculate percentage price changes for each column
+live_percentage_changes = live_fdi_data.pct_change() * 100
+
+# Calculate volatility for each column
+live_volatility = live_percentage_changes.rolling(window=20).std()  # Adjust the window size as needed
+
+# Create a matrix of volatility-adjusted price differences
+live_volatility_adjusted_matrix = pd.DataFrame(index=live_fdi_data.index, columns=live_fdi_data.columns)
+
+for col1 in live_fdi_data.columns:
+    for col2 in live_fdi_data.columns:
+        if col1 != col2:
+            # Adjust the weight based on the volatility difference
+            weight = 1 / (live_volatility[col1] - live_volatility[col2] + 1e-10)  # Avoid division by zero
+            live_volatility_adjusted_matrix[f'{col1}_{col2}_VolAdj'] = weight * (live_fdi_data[col1] - live_fdi_data[col2])
+
+# Display or save the volatility-adjusted matrix
+print(live_volatility_adjusted_matrix)
+
+# Perform additional analysis or visualization as needed
+
+# Assuming live_fdi_data, live_treasuries_data, and other necessary dataframes are loaded
+
+# Calculate percentage price changes for each model
+live_percentage_changes_fdi = live_fdi_data.pct_change() * 100
+live_percentage_changes_treasuries = live_treasuries_data.pct_change() * 100
+
+# Calculate liquidity rates
+liquidity_rates_fdi = live_percentage_changes_fdi.rolling(window=10).mean()
+liquidity_rates_treasuries = live_percentage_changes_treasuries.rolling(window=10).mean()
+
+# Create a matrix of liquidity-adjusted price differences
+liquidity_adjusted_matrix = pd.DataFrame(index=live_fdi_data.index)
+
+for col1 in live_fdi_data.columns:
+    for col2 in live_treasuries_data.columns:
+        # Assuming the columns have similar names for comparison
+        if col1 in col2:
+            # Adjust the weight based on liquidity rates
+            weight = liquidity_rates_fdi[col1] / (liquidity_rates_treasuries[col2] + 1e-10)  # Avoid division by zero
+            liquidity_adjusted_matrix[f'{col1}_{col2}_LiqAdj'] = weight * (live_fdi_data[col1] - live_treasuries_data[col2])
+
+# Calculate the investment yield for each pair
+investment_yield_matrix = pd.DataFrame(index=live_fdi_data.index)
+
+for col1 in live_fdi_data.columns:
+    for col2 in live_treasuries_data.columns:
+        if f'{col1}_{col2}_VolAdj' in live_volatility_adjusted_matrix.columns and f'{col1}_{col2}_LiqAdj' in liquidity_adjusted_matrix.columns:
+            # Combine the volatility and liquidity adjustments (you can adjust weights as needed)
+            combined_adj = 0.7 * live_volatility_adjusted_matrix[f'{col1}_{col2}_VolAdj'] + 0.3 * liquidity_adjusted_matrix[f'{col1}_{col2}_LiqAdj']
+            investment_yield_matrix[f'{col1}_{col2}_Yield'] = combined_adj
+
+# Display or save the investment yield matrix
+print(investment_yield_matrix)
+
+# Perform additional analysis or visualization as needed
+import pandas as pd
+import numpy as np
+
+# Create a dictionary to store asset classes, their prices, and production values
+asset_data = {
+    'FDI': {'price': pd.Series(), 'production_value': pd.Series()},
+    'Treasuries': {'price': pd.Series(), 'production_value': pd.Series()},
+    # Add other asset classes as needed
+}
+
+# Create a dictionary to store foreign reserves for each country
+foreign_reserves = {
+    'CountryA': {'FDI': 1000000, 'Treasuries': 500000},
+    'CountryB': {'FDI': 800000, 'Treasuries': 600000},
+    # Add other countries and asset classes as needed
+}
+
+# Create a dictionary to store trade negotiation terms
+trade_negotiation_terms = {
+    'CountryA': {'CountryB': {'FDI': {'price': 0.9, 'production_value': 0.95},
+                               'Treasuries': {'price': 1.1, 'production_value': 1.2}}},
+    # Add other negotiation terms as needed
+}
+
+# Example function for broker interaction
+def negotiate_trade(broker1, broker2, asset_class, quantity):
+    if asset_class not in asset_data:
+        print(f"Error: Asset class {asset_class} not found.")
+        return
+
+    if broker1 not in foreign_reserves or broker2 not in foreign_reserves:
+        print("Error: Invalid brokers.")
+        return
+
+    if broker2 not in trade_negotiation_terms.get(broker1, {}):
+        print(f"Error: No negotiation terms found between {broker1} and {broker2}.")
+        return
+
+    if asset_class not in trade_negotiation_terms[broker1][broker2]:
+        print(f"Error: No negotiation terms found for {asset_class} between {broker1} and {broker2}.")
+        return
+
+    price_factor = trade_negotiation_terms[broker1][broker2][asset_class]['price']
+    production_value_factor = trade_negotiation_terms[broker1][broker2][asset_class]['production_value']
+
+    total_cost = quantity * asset_data[asset_class]['price'] * price_factor
+
+    if foreign_reserves[broker1][asset_class] >= total_cost:
+        foreign_reserves[broker1][asset_class] -= total_cost
+        foreign_reserves[broker2][asset_class] += quantity * asset_data[asset_class]['production_value'] * production_value_factor
+
+        print(f"Trade successful: {broker1} sold {quantity} units of {asset_class} to {broker2} for {total_cost} foreign reserves.")
+    else:
+        print(f"Trade failed: Insufficient foreign reserves for {broker1} to sell {quantity} units of {asset_class} to {broker2}.")
+
+# Example usage
+negotiate_trade('CountryA', 'CountryB', 'FDI', 100)
