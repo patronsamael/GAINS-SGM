@@ -63,10 +63,10 @@ class LeveragedBuyout:
         print(f"Discounted Cash Flow (DCF): {dcf}")
 
     def killzone(self):
-        volatility = 0.05  # 5.0% volatility
-        while volatility <= 0.095:  # 9.5% volatility
-            if volatility == 0.095:
-                print("Resistance for volatility reached at 9.5% - Killzone active!")
+        volatility = 0.03  # 3.0% volatility
+        while volatility <= 0.125:  # 12.5% volatility
+            if volatility == 0.125:
+                print("Resistance for volatility reached at 12.5% - Killzone active!")
             else:
                 print(f"Resistance for volatility at {volatility * 100:.1f}%")
             volatility += 0.005  # Increment by 0.5% for each iteration
