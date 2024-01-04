@@ -75,3 +75,65 @@ broker_bot_instance = BrokerBot()
 
 # Start the chatbot
 broker_bot_instance.start_chat()
+
+import random
+
+class PortfolioManager:
+    def __init__(self, initial_cash):
+        self.cash = initial_cash
+        self.portfolio = {}
+
+    def buy_stock(self, symbol, quantity, price):
+        cost = quantity * price
+        if self.cash >= cost:
+            if symbol in self.portfolio:
+                self.portfolio[symbol] += quantity
+            else:
+                self.portfolio[symbol] = quantity
+            self.cash -= cost
+            return f"Bought {quantity} shares of {symbol} at ${price}."
+        else:
+            return "Insufficient funds to buy."
+
+    def sell_stock(self, symbol, quantity, price):
+        if symbol in self.portfolio and self.portfolio[symbol] >= quantity:
+            revenue = quantity * price
+            self.portfolio[symbol] -= quantity
+            self.cash += revenue
+            return f"Sold {quantity} shares of {symbol} at ${price}."
+        else:
+            return "Insufficient shares to sell."
+
+    def simulate_market_movement(self):
+        # Simulate market movement with a random percentage change
+        market_change = random.uniform(-3, 3)  # Assume a maximum 3% change
+        for symbol, quantity in self.portfolio.items():
+            stock_price = 50  # Replace with real-time stock prices from an API
+            new_price = stock_price * (1 + market_change / 100)
+            self.portfolio[symbol] = round(quantity * new_price)
+
+    def get_portfolio_value(self):
+        # Calculate the total value of the portfolio
+        total_value = self.cash
+        for symbol, quantity in self.portfolio.items():
+            stock_price = 50  # Replace with real-time stock prices from an API
+            total_value += quantity * stock_price
+        return total_value
+
+# Example usage of the PortfolioManager
+portfolio_manager = PortfolioManager(initial_cash=10000)
+
+# Buy some stocks
+print(portfolio_manager.buy_stock('AAPL', 5, 150))
+print(portfolio_manager.buy_stock('GOOGL', 3, 250))
+
+# Simulate market movement
+portfolio_manager.simulate_market_movement()
+
+# Sell some stocks
+print(portfolio_manager.sell_stock('AAPL', 2, 170))
+print(portfolio_manager.sell_stock('GOOGL', 1, 280))
+
+# Get the current portfolio value
+print(f"Portfolio Value: ${portfolio_manager.get_portfolio_value():,.2f}")
+
