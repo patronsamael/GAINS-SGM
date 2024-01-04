@@ -24,4 +24,4 @@ time = 10
 iterations = 100
 
 result = liquidity_provision(financial_volume_density, net_cash_flow, time, iterations)
-print(f"Averead Liquidity Provision: {result}")
+print(f"Average Liquidity Provision: {result}")
