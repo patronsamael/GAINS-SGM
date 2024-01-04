@@ -1,8 +1,8 @@
 class DRTCO:
     def __init__(self):
         # ERC-20 Token
-        self.name = "Imperial Federated Crowns"
-        self.symbol = "IFC"
+        self.name = "Ozhumanill Imperial Crown"
+        self.symbol = "OIC"
         self.totalSupply = 400803252946060000000000000000000000.00
         self.decimals = 18
 
@@ -19,9 +19,9 @@ class DRTCO:
         if self.balanceOf[sender] >= amount:
             self.balanceOf[sender] -= amount
             self.balanceOf[recipient] += amount
-            print(f"Transferred {amount} IFC from {sender} to {recipient}.")
+            print(f"Transferred {amount} OIC from {sender} to {recipient}.")
         else:
-            print(f"Insufficient balance for {sender} to transfer {amount} IFC.")
+            print(f"Insufficient balance for {sender} to transfer {amount} OIC.")
 
 # Example Usage
 drtco_contract = DRTCO()
@@ -35,8 +35,8 @@ drtco_contract.transfer("SenderAddress", "RecipientAddress", 500)
 
 # Print balances
 print("Balances after transfer:")
-print(f"Sender Address: {drtco_contract.balanceOf['SenderAddress']} IFC")
-print(f"Recipient Address: {drtco_contract.balanceOf['RecipientAddress']} IFC")
+print(f"Sender Address: {drtco_contract.balanceOf['SenderAddress']} OIC")
+print(f"Recipient Address: {drtco_contract.balanceOf['RecipientAddress']} OIC")
 
 class CustodialSystem:
     def __init__(self):
