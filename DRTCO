@@ -1,8 +1,8 @@
 class DRTCO:
     def __init__(self):
         # ERC-20 Token
-        self.name = "Orthodox System Samuel"
-        self.symbol = "OSS"
+        self.name = "Dragoi E Kafkave"
+        self.symbol = "DEK"
         self.totalSupply = 400803252946060000000000000000000000.00
         self.decimals = 18
 
