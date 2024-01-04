@@ -1,0 +1,77 @@
+from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
+
+class BrokerBot:
+    def __init__(self):
+        # Create a chatbot instance
+        self.broker_bot = ChatBot('BrokerBot')
+
+        # Create a new trainer for the chatbot
+        trainer = ChatterBotCorpusTrainer(self.broker_bot)
+
+        # Train the chatbot on English language data
+        trainer.train('chatterbot.corpus.english')
+
+        # Custom training data for a broker theme
+        custom_data = [
+            'What is the current stock market situation?',
+            'Can you provide information about recent market trends?',
+            'Tell me about some popular investment strategies.',
+            'How can I open a brokerage account?',
+            'What are the fees associated with trading?',
+            'Give me advice on diversifying my investment portfolio.',
+            'How can I stay updated on financial news?',
+            'Move all assets to the volume of the market.',
+            'What is the balance sheet?',
+            'Tell me about the income statement.',
+            'Explain the cash flow statement.',
+        ]
+
+        # Train the chatbot on custom data
+        trainer.train(custom_data)
+
+        # Initialize portfolio value
+        self.portfolio_value = 10000  # Starting portfolio value
+
+    def move_assets_to_market_volume(self):
+        # Simulate moving all assets to the volume of the market
+        market_volume = 50000  # Example market volume
+        self.portfolio_value = market_volume
+        return f"Moved all assets to the market volume. Portfolio value is now {self.portfolio_value}"
+
+    def get_balance_sheet(self):
+        # Simulate retrieving a balance sheet
+        return "Here is a simplified balance sheet:\nAssets: $60,000\nLiabilities: $20,000\nEquity: $40,000"
+
+    def get_income_statement(self):
+        # Simulate retrieving an income statement
+        return "Here is a simplified income statement:\nRevenue: $30,000\nExpenses: $20,000\nProfit: $10,000"
+
+    def get_cash_flow_statement(self):
+        # Simulate retrieving a cash flow statement
+        return "Here is a simplified cash flow statement:\nOperating Cash Flow: $15,000\nInvesting Cash Flow: -$5,000\nFinancing Cash Flow: -$2,000"
+
+    def start_chat(self):
+        print("BrokerBot: Hello! I'm your BrokerBot. How can I assist you today?")
+        while True:
+            user_input = input("You: ")
+            if user_input.lower() == 'exit':
+                print("BrokerBot: Goodbye!")
+                break
+            elif 'move assets' in user_input.lower():
+                response = self.move_assets_to_market_volume()
+            elif 'balance sheet' in user_input.lower():
+                response = self.get_balance_sheet()
+            elif 'income statement' in user_input.lower():
+                response = self.get_income_statement()
+            elif 'cash flow statement' in user_input.lower():
+                response = self.get_cash_flow_statement()
+            else:
+                response = self.broker_bot.get_response(user_input)
+            print("BrokerBot:", response)
+
+# Create an instance of BrokerBot
+broker_bot_instance = BrokerBot()
+
+# Start the chatbot
+broker_bot_instance.start_chat()
