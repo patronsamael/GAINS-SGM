@@ -1,0 +1,27 @@
+class TreasuryMint:
+    def __init__(self, drtco_instance):
+        self.drtco = drtco_instance
+
+    def mint_tokens(self, amount):
+        self.drtco.total_supply += amount
+        self.drtco.balance_of["owner"] += amount
+        print(f"Minted {amount} tokens. Total supply: {self.drtco.total_supply}")
+
+    def burn_tokens(self, amount):
+        if self.drtco.total_supply >= amount:
+            self.drtco.total_supply -= amount
+            self.drtco.balance_of["owner"] -= amount
+            print(f"Burned {amount} tokens. Total supply: {self.drtco.total_supply}")
+        else:
+            print("Insufficient tokens to burn.")
+
+
+# Example Usage
+drtco_instance = DRTCO()
+treasury_mint = TreasuryMint(drtco_instance)
+
+# Mint new tokens
+treasury_mint.mint_tokens(1000)
+
+# Burn existing tokens
+treasury_mint.burn_tokens(500)
