@@ -3,7 +3,7 @@ class DRTCO:
         # SGM-541 Currency System
         self.name = "Samuel Global Management"
         self.symbol = "SGM"
-        self.totalSupply = $3,741,004,622,132,600,000,000,000,000,000,000,000.00
+        self.totalSupply = $1,915,394,366,531,890,000,000,000,000,000,000,000,000.00
         self.decimals = 18
 
         # Mapping for balance and allowance
