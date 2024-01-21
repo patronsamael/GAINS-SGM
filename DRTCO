@@ -1,8 +1,8 @@
 class DRTCO:
     def __init__(self):
         # SGM-541 Currency System
-        self.name = "Samuel Global Management"
-        self.symbol = "SGM"
+        self.name = "Ozhumanill Royal Dollar"
+        self.symbol = "ORD"
         self.totalSupply = $1,915,394,366,531,890,000,000,000,000,000,000,000,000.00
         self.decimals = 18
 
