@@ -1,0 +1,54 @@
+class GlobalInvestorWithCurrency(GlobalCurrencyCompetitor):
+    def __init__(self, name):
+        super().__init__(name)
+        self.government_investments = {}
+
+    def invest_in_government(self, government_name, amount, ownership_percentage):
+        # Logic for investing in a government by swapping debt with currency.
+        if government_name in self.government_investments:
+            self.government_investments[government_name]['amount'] += amount
+            self.government_investments[government_name]['ownership_percentage'] += ownership_percentage
+        else:
+            self.government_investments[government_name] = {'amount': amount, 'ownership_percentage': ownership_percentage}
+            print(f"Invested in {government_name} with amount {amount} and ownership percentage {ownership_percentage}%.")
+
+    def display_government_investments(self):
+        # Display the investments in governments.
+        print(f"Government Investments: {self.government_investments}")
+
+# Example Usage:
+global_investor_currency = GlobalInvestorWithCurrency("Global Investor with Currency")
+
+# Setting an initial exchange rate
+global_investor_currency.set_exchange_rate(1.2)
+
+# Creating a bank account
+account_num = global_investor_currency.create_account("Investor Two", 600000)
+
+# Depositing to the bank account
+global_investor_currency.deposit_to_account(account_num, 200000)
+
+# Withdrawing from the bank account
+global_investor_currency.withdraw_from_account(account_num, 100000)
+
+# Executing treasury responsibilities
+global_investor_currency.treasury_responsibilities()
+
+# Securitizing assets (debt transactions in this case)
+debt_assets = ["Loan 1", "Loan 2", "Loan 3"]
+global_investor_currency.securitize_assets(debt_assets, "XYZ Securities", 800000)
+
+# Investing in government and owning a percentage of GDP
+global_investor_currency.invest_in_government("Country X", 400000, 4)
+global_investor_currency.invest_in_government("Country Y", 300000, 3)
+
+# Converting your currency to a foreign currency
+foreign_exchange_rate = 1.5
+amount_to_convert = 120000
+converted_amount = global_investor_currency.convert_to_foreign_currency(amount_to_convert, foreign_exchange_rate)
+print(f"Converted amount to foreign currency: {converted_amount}")
+
+# Displaying the inventory, including bank accounts, securitized assets, and government investments
+global_investor_currency.display_inventory()
+global_investor_currency.display_securitized_assets()
+global_investor_currency.display_government_investments()
