@@ -1,8 +1,8 @@
 class DRTCO:
     def __init__(self):
-        # ROD-541 Currency System
-        self.name = "Royal Ozhuman Daric"
-        self.symbol = "ROD"
+        # ORD-541 Currency System
+        self.name = "Ozhuman Regiment Daric"
+        self.symbol = "ORD"
         self.totalSupply = $15,323,154,932,255,100,000,000,000,000,000,000,000,000.00
         self.decimals = 18
 
@@ -19,9 +19,9 @@ class DRTCO:
         if self.balanceOf[sender] >= amount:
             self.balanceOf[sender] -= amount
             self.balanceOf[recipient] += amount
-            print(f"Transferred {amount} ROD from {sender} to {recipient}.")
+            print(f"Transferred {amount} ORD from {sender} to {recipient}.")
         else:
-            print(f"Insufficient balance for {sender} to transfer {amount} ROD.")
+            print(f"Insufficient balance for {sender} to transfer {amount} ORD.")
 
 # Example Usage
 drtco_contract = DRTCO()
@@ -35,8 +35,8 @@ drtco_contract.transfer("SenderAddress", "RecipientAddress", 500)
 
 # Print balances
 print("Balances after transfer:")
-print(f"Sender Address: {drtco_contract.balanceOf['SenderAddress']} ROD")
-print(f"Recipient Address: {drtco_contract.balanceOf['RecipientAddress']} ROD")
+print(f"Sender Address: {drtco_contract.balanceOf['SenderAddress']} ORD")
+print(f"Recipient Address: {drtco_contract.balanceOf['RecipientAddress']} ORD")
 
 class CustodialSystem:
     def __init__(self):
@@ -154,25 +154,25 @@ repository.list_items()
 
 class OriginationSystem:
     def __init__(self):
-        self.origination_recRODs = {}
+        self.origination_recORDs = {}
         self.next_id = 1
 
     def originate_item(self, item_data):
         origination_id = self.next_id
-        self.origination_recRODs[origination_id] = item_data
+        self.origination_recORDs[origination_id] = item_data
         self.next_id += 1
         print(f"Item originated with ID {origination_id}.")
 
     def get_item_data(self, origination_id):
-        if origination_id in self.origination_recRODs:
-            return self.origination_recRODs[origination_id]
+        if origination_id in self.origination_recORDs:
+            return self.origination_recORDs[origination_id]
         else:
             print(f"Item with ID {origination_id} not found.")
             return None
 
     def list_originations(self):
-        print("Origination recRODs:")
-        for origination_id, item_data in self.origination_recRODs.items():
+        print("Origination recORDs:")
+        for origination_id, item_data in self.origination_recORDs.items():
             print(f"ID: {origination_id}, Data: {item_data}")
 
 # Example Usage:
@@ -187,12 +187,12 @@ item_data = origination_system.get_item_data(1)
 if item_data:
     print(f"Data for Item 1: {item_data}")
 
-# List all origination recRODs
+# List all origination recORDs
 origination_system.list_originations()
 
 class OriginationSystem:
     def __init__(self, initial_liquidity=100000):
-        self.origination_recRODs = {}
+        self.origination_recORDs = {}
         self.next_id = 1
         self.liquidity = initial_liquidity
     def originate_item(self, item_data, origination_cost):
@@ -201,7 +201,7 @@ class OriginationSystem:
             return
 
         origination_id = self.next_id
-        self.origination_recRODs[origination_id] = item_data
+        self.origination_recORDs[origination_id] = item_data
         self.next_id += 1
         self.liquidity -= origination_cost
         print(f"Item originated with ID {origination_id}. Remaining liquidity: ${self.liquidity}")
