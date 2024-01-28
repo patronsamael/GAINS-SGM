@@ -1,7 +1,7 @@
 class DRTCO:
     def __init__(self):
         # OID-541 Currency System
-        self.name = "Ozhumanil Imperial Daric"
+        self.name = "Ozhumanil Imperial Dollar"
         self.symbol = "OID"
         self.totalSupply = $15,323,154,932,255,100,000,000,000,000,000,000,000,000.00
         self.decimals = 18
