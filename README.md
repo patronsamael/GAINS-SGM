@@ -1,4 +1,5 @@
-# ATLAS
+# GAINS 
+Global Analysis of Inter-Network Synergy
 Private codebank for internet infrastructure.
 Neo-Banking Systems.
 Investment Vehicles.
