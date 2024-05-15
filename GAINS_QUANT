@@ -1,0 +1,929 @@
+"This comprehensive code framework provides a clear view of infrastructure bond price action over time 
+and consolidates live trading volumes to simulate a dark pool for global liquidity syndication."
+
+import pandas as pd
+import numpy as np
+import requests
+from sklearn.preprocessing import StandardScaler
+
+# Example function to fetch economic data
+def fetch_data(api_url):
+    response = requests.get(api_url)
+    data = response.json()
+    return pd.DataFrame(data)
+
+# Preprocessing function
+def preprocess_data(df):
+    scaler = StandardScaler()
+    scaled_data = scaler.fit_transform(df)
+    return pd.DataFrame(scaled_data, columns=df.columns)
+class ArbitrageModel:
+    def __init__(self, data):
+        self.data = data
+
+    def identify_opportunities(self):
+        # Placeholder for arbitrage identification logic
+        opportunities = self.data[self.data['potential_gain'] > 0.44]
+        return opportunities[(opportunities['margin'] > 0.055) & (opportunities['margin'] < 0.095)]
+
+    def execute_trades(self, opportunities):
+        gains = opportunities['potential_gain'].sum()
+        return gains
+
+# Example usage
+data = preprocess_data(fetch_data('api_url'))
+model = ArbitrageModel(data)
+opportunities = model.identify_opportunities()
+daily_gains = model.execute_trades(opportunities)
+from transformers import pipeline
+
+# Initialize sentiment analysis pipeline
+sentiment_pipeline = pipeline('sentiment-analysis')
+
+# Example function to analyze sentiment
+def analyze_sentiment(text):
+    result = sentiment_pipeline(text)
+    return result
+
+# Sentiment analysis on financial news
+news = "The market outlook is positive with expected growth."
+sentiment = analyze_sentiment(news)
+print(sentiment)
+import statsmodels.api as sm
+
+# Example time series forecasting
+def forecast_gdp(time_series_data, periods=12):
+    model = sm.tsa.statespace.SARIMAX(time_series_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 12))
+    results = model.fit()
+    forecast = results.get_forecast(steps=periods)
+    return forecast.predicted_mean
+
+# Example usage
+gdp_data = fetch_data('gdp_api_url')
+forecast = forecast_gdp(gdp_data['GDP'])
+print(forecast)
+from blockchain import Blockchain
+
+# Initialize blockchain
+blockchain = Blockchain()
+
+# Add a transaction
+def add_transaction(transaction):
+    blockchain.add_new_transaction(transaction)
+    blockchain.mine_block()
+
+# Example transaction
+transaction = {
+    'sender': 'user_1',
+    'recipient': 'user_2',
+    'amount': 1000
+}
+add_transaction(transaction)
+from sklearn.linear_model import LinearRegression
+
+# Predictive modeling function
+def predictive_model(data):
+    X = data[['inflow', 'outflow']]
+    y = data['market_value']
+    model = LinearRegression()
+    model.fit(X, y)
+    return model
+
+# Example usage
+data = fetch_data('market_data_api')
+model = predictive_model(data)
+predictions = model.predict(data[['inflow', 'outflow']])
+print(predictions)
+
+import pandas as pd
+import requests
+
+# Function to fetch market data using ISO MIC codes
+def fetch_market_data(mic_code):
+    api_url = f"https://api.financialdata.com/markets/{mic_code}"
+    response = requests.get(api_url)
+    data = response.json()
+    return pd.DataFrame(data)
+
+# Example usage for multiple markets
+mic_codes = ['XNYS', 'XNAS', 'XLON']  # Example MIC codes for NYSE, NASDAQ, and LSE
+market_data = [fetch_market_data(mic) for mic in mic_codes]
+combined_data = pd.concat(market_data)
+
+class Vault:
+    def __init__(self, initial_capital, target_return, transaction_margin):
+        self.capital = initial_capital
+        self.target_return = target_return
+        self.transaction_margin = transaction_margin
+        self.reserved_assets = 0
+
+    def identify_opportunities(self, market_data):
+        # Placeholder for arbitrage logic
+        opportunities = market_data[market_data['potential_gain'] > self.transaction_margin]
+        return opportunities
+
+    def execute_trades(self, opportunities):
+        gains = opportunities['potential_gain'].sum()
+        self.capital += gains
+        self.reserved_assets += gains * 0.80  # 80% compounding into reserve
+
+    def compound_returns(self, periods=1):
+        for _ in range(periods):
+            self.capital *= (1 + self.target_return)
+        return self.capital
+
+# Example usage
+initial_capital = 30e9  # $30 billion
+vault = Vault(initial_capital, target_return=0.80, transaction_margin=0.055)
+opportunities = vault.identify_opportunities(combined_data)
+vault.execute_trades(opportunities)
+annual_capital = vault.compound_returns(periods=1)
+print(f"Yearly Capital after Compounding: {annual_capital}")
+
+from blockchain import Blockchain
+
+# Initialize blockchain
+blockchain = Blockchain()
+
+# Function to add and mine transactions in the blockchain
+def add_transaction(sender, recipient, amount):
+    transaction = {
+        'sender': sender,
+        'recipient': recipient,
+        'amount': amount
+    }
+    blockchain.add_new_transaction(transaction)
+    blockchain.mine_block()
+
+# Example transactions to Vault
+add_transaction('market_1', 'Vault', 1000000)  # Example transaction
+add_transaction('market_2', 'Vault', 500000)   # Example transaction
+
+import pandas as pd
+import requests
+from blockchain import Blockchain
+
+class Vault:
+    def __init__(self, initial_capital, target_return, transaction_margin):
+        self.capital = initial_capital
+        self.target_return = target_return
+        self.transaction_margin = transaction_margin
+        self.reserved_assets = 0
+        self.blockchain = Blockchain()
+
+    def fetch_market_data(self, mic_code):
+        api_url = f"https://api.financialdata.com/markets/{mic_code}"
+        response = requests.get(api_url)
+        data = response.json()
+        return pd.DataFrame(data)
+
+    def identify_opportunities(self, market_data):
+        opportunities = market_data[market_data['potential_gain'] > self.transaction_margin]
+        return opportunities
+
+    def execute_trades(self, opportunities):
+        gains = opportunities['potential_gain'].sum()
+        self.capital += gains
+        self.reserved_assets += gains * 0.80  # 80% compounding into reserve
+        for _, row in opportunities.iterrows():
+            self.add_transaction(row['market'], 'Vault', row['potential_gain'])
+
+    def compound_returns(self, periods=1):
+        for _ in range(periods):
+            self.capital *= (1 + self.target_return)
+        return self.capital
+
+    def add_transaction(self, sender, recipient, amount):
+        transaction = {
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount
+        }
+        self.blockchain.add_new_transaction(transaction)
+        self.blockchain.mine_block()
+
+# Example usage
+mic_codes = ['XNYS', 'XNAS', 'XLON']
+initial_capital = 30e9  # $30 billion
+vault = Vault(initial_capital, target_return=0.80, transaction_margin=0.055)
+
+# Fetch and combine data from multiple markets
+market_data = [vault.fetch_market_data(mic) for mic in mic_codes]
+combined_data = pd.concat(market_data)
+
+# Identify and execute arbitrage opportunities
+opportunities = vault.identify_opportunities(combined_data)
+vault.execute_trades(opportunities)
+
+# Compound returns annually
+annual_capital = vault.compound_returns(periods=1)
+print(f"Yearly Capital after Compounding: {annual_capital}")
+
+import pandas as pd
+
+# Load data from provided files
+stock_exchanges_df = pd.read_excel('/mnt/data/Stock Exchanges.xlsx')
+ports_df = pd.read_pdf('/mnt/data/Ports.pdf')
+
+# Data preprocessing
+def preprocess_data(df):
+    # Implement necessary preprocessing steps
+    df = df.dropna()  # Example: dropping missing values
+    return df
+
+stock_exchanges_df = preprocess_data(stock_exchanges_df)
+ports_df = preprocess_data(ports_df)
+
+from statsmodels.tsa.arima.model import ARIMA
+import numpy as np
+
+# Example time series model for GDP prediction
+def predict_gdp(country_data):
+    model = ARIMA(country_data, order=(5, 1, 0))
+    model_fit = model.fit()
+    forecast = model_fit.forecast(steps=10)
+    return forecast
+
+# Sentiment analysis using a pre-trained model (e.g., VADER)
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+def analyze_sentiment(text):
+    analyzer = SentimentIntensityAnalyzer()
+    score = analyzer.polarity_scores(text)
+    return score
+
+# Example usage
+gdp_forecast = predict_gdp(stock_exchanges_df['GDP'])
+sentiment_score = analyze_sentiment("Economic outlook is positive.")
+
+import hashlib
+import json
+from time import time
+
+class Blockchain:
+    def __init__(self):
+        self.chain = []
+        self.current_transactions = []
+        self.new_block(previous_hash='1', proof=100)
+
+    def new_block(self, proof, previous_hash=None):
+        block = {
+            'index': len(self.chain) + 1,
+            'timestamp': time(),
+            'transactions': self.current_transactions,
+            'proof': proof,
+            'previous_hash': previous_hash or self.hash(self.chain[-1]),
+        }
+        self.current_transactions = []
+        self.chain.append(block)
+        return block
+
+    def new_transaction(self, sender, recipient, amount):
+        self.current_transactions.append({
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount,
+        })
+        return self.last_block['index'] + 1
+
+    @staticmethod
+    def hash(block):
+        block_string = json.dumps(block, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
+
+    @property
+    def last_block(self):
+        return self.chain[-1]
+
+# Initialize the blockchain
+blockchain = Blockchain()
+blockchain.new_transaction(sender="a", recipient="b", amount=1)
+blockchain.new_block(proof=200)
+
+class FinancialModel:
+    def __init__(self):
+        self.portfolio = []
+
+    def arbitrage_opportunity(self, prices):
+        # Implement arbitrage logic
+        profit = prices['buy'] - prices['sell']
+        return profit
+
+    def update_portfolio(self, assets):
+        self.portfolio.extend(assets)
+
+# Example usage
+financial_model = FinancialModel()
+profit = financial_model.arbitrage_opportunity({'buy': 100, 'sell': 90})
+financial_model.update_portfolio(['Asset1', 'Asset2'])
+
+class TradeRoutes:
+    def __init__(self):
+        self.routes = {}
+
+    def add_route(self, port, inflow, outflow):
+        self.routes[port] = {'inflow': inflow, 'outflow': outflow}
+
+    def calculate_net_flow(self):
+        net_flows = {port: data['inflow'] - data['outflow'] for port, data in self.routes.items()}
+        return net_flows
+
+# Example usage
+trade_routes = TradeRoutes()
+trade_routes.add_route('Port1', 1000, 500)
+net_flows = trade_routes.calculate_net_flow()
+
+class GlobalAnalysisOfInterNetworkSynergy:
+    def __init__(self):
+        self.blockchain = Blockchain()
+        self.financial_model = FinancialModel()
+        self.trade_routes = TradeRoutes()
+
+    def vault(self):
+        # Logic for consolidating assets
+        pass
+
+    def trade_routes(self):
+        # Logic for managing trade routes
+        pass
+
+    def amethyst_capital(self):
+        # Logic for managing the main fund
+        pass
+
+# Example of using the integrated model
+global_analysis = GlobalAnalysisOfInterNetworkSynergy()
+global_analysis.vault()
+global_analysis.trade_routes()
+global_analysis.amethyst_capital()
+
+import pandas as pd
+import pdfplumber
+
+# Load data from the provided PDF
+def load_pdf_data(pdf_path):
+    with pdfplumber.open(pdf_path) as pdf:
+        all_text = ''
+        for page in pdf.pages:
+            all_text += page.extract_text()
+    return all_text
+
+# Assume 'Ports.pdf' contains necessary information
+pdf_data = load_pdf_data('/mnt/data/Ports.pdf')
+print(pdf_data)  # For debugging, print extracted text
+
+from statsmodels.tsa.arima.model import ARIMA
+import numpy as np
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import hashlib
+import json
+from time import time
+
+class Blockchain:
+    def __init__(self):
+        self.chain = []
+        self.current_transactions = []
+        self.new_block(previous_hash='1', proof=100)
+
+    def new_block(self, proof, previous_hash=None):
+        block = {
+            'index': len(self.chain) + 1,
+            'timestamp': time(),
+            'transactions': self.current_transactions,
+            'proof': proof,
+            'previous_hash': previous_hash or self.hash(self.chain[-1]),
+        }
+        self.current_transactions = []
+        self.chain.append(block)
+        return block
+
+    def new_transaction(self, sender, recipient, amount):
+        self.current_transactions.append({
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount,
+        })
+        return self.last_block['index'] + 1
+
+    @staticmethod
+    def hash(block):
+        block_string = json.dumps(block, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
+
+    @property
+    def last_block(self):
+        return self.chain[-1]
+
+class Vault:
+    def __init__(self, initial_capital, target_return, transaction_margin):
+        self.capital = initial_capital
+        self.target_return = target_return
+        self.transaction_margin = transaction_margin
+        self.reserved_assets = 0
+
+    def identify_opportunities(self, market_data):
+        opportunities = market_data[market_data['potential_gain'] > self.transaction_margin]
+        return opportunities
+
+    def execute_trades(self, opportunities):
+        gains = opportunities['potential_gain'].sum()
+        self.capital += gains
+        self.reserved_assets += gains * 0.80  # 80% compounding into reserve
+        for _, row in opportunities.iterrows():
+            self.add_transaction(row['market'], 'Vault', row['potential_gain'])
+
+    def compound_returns(self, periods=1):
+        for _ in range(periods):
+            self.capital *= (1 + self.target_return)
+        return self.capital
+
+    def add_transaction(self, sender, recipient, amount):
+        transaction = {
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount
+        }
+        blockchain.new_transaction(transaction)
+        blockchain.new_block(proof=200)  # Example proof
+
+class TradeRoutes:
+    def __init__(self):
+        self.routes = {}
+
+    def add_route(self, port, inflow, outflow):
+        self.routes[port] = {'inflow': inflow, 'outflow': outflow}
+
+    def calculate_net_flow(self):
+        net_flows = {port: data['inflow'] - data['outflow'] for port, data in self.routes.items()}
+        return net_flows
+
+class GlobalAnalysisOfInterNetworkSynergy:
+    def __init__(self):
+        self.blockchain = Blockchain()
+        self.vault = Vault(initial_capital=30e9, target_return=0.80, transaction_margin=0.055)
+        self.trade_routes = TradeRoutes()
+
+    def vault(self):
+        # Logic for consolidating assets
+        pass
+
+    def trade_routes(self):
+        # Logic for managing trade routes
+        pass
+
+    def amethyst_capital(self):
+        # Logic for managing the main fund
+        pass
+
+# Example of using the integrated model
+global_analysis = GlobalAnalysisOfInterNetworkSynergy()
+global_analysis.vault()
+global_analysis.trade_routes()
+global_analysis.amethyst_capital()
+
+from statsmodels.tsa.arima.model import ARIMA
+import numpy as np
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import hashlib
+import json
+from time import time
+
+class Blockchain:
+    def __init__(self):
+        self.chain = []
+        self.current_transactions = []
+        self.new_block(previous_hash='1', proof=100)
+
+    def new_block(self, proof, previous_hash=None):
+        block = {
+            'index': len(self.chain) + 1,
+            'timestamp': time(),
+            'transactions': self.current_transactions,
+            'proof': proof,
+            'previous_hash': previous_hash or self.hash(self.chain[-1]),
+        }
+        self.current_transactions = []
+        self.chain.append(block)
+        return block
+
+    def new_transaction(self, sender, recipient, amount):
+        self.current_transactions.append({
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount,
+        })
+        return self.last_block['index'] + 1
+
+    @staticmethod
+    def hash(block):
+        block_string = json.dumps(block, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
+
+    @property
+    def last_block(self):
+        return self.chain[-1]
+
+class Vault:
+    def __init__(self, initial_capital, target_return, transaction_margin):
+        self.capital = initial_capital
+        self.target_return = target_return
+        self.transaction_margin = transaction_margin
+        self.reserved_assets = 0
+
+    def identify_opportunities(self, market_data):
+        opportunities = market_data[market_data['potential_gain'] > self.transaction_margin]
+        return opportunities
+
+    def execute_trades(self, opportunities):
+        gains = opportunities['potential_gain'].sum()
+        self.capital += gains
+        self.reserved_assets += gains * 0.80  # 80% compounding into reserve
+        for _, row in opportunities.iterrows():
+            self.add_transaction(row['market'], 'Vault', row['potential_gain'])
+
+    def compound_returns(self, periods=1):
+        for _ in range(periods):
+            self.capital *= (1 + self.target_return)
+        return self.capital
+
+    def add_transaction(self, sender, recipient, amount):
+        transaction = {
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount
+        }
+        blockchain.new_transaction(transaction)
+        blockchain.new_block(proof=200)  # Example proof
+
+class TradeRoutes:
+    def __init__(self):
+        self.routes = {}
+
+    def add_route(self, port, inflow, outflow):
+        self.routes[port] = {'inflow': inflow, 'outflow': outflow}
+
+    def calculate_net_flow(self):
+        net_flows = {port: data['inflow'] - data['outflow'] for port, data in self.routes.items()}
+        return net_flows
+
+class GlobalAnalysisOfInterNetworkSynergy:
+    def __init__(self):
+        self.blockchain = Blockchain()
+        self.vault = Vault(initial_capital=30e9, target_return=0.80, transaction_margin=0.055)
+        self.trade_routes = TradeRoutes()
+
+    def vault(self):
+        # Logic for consolidating assets
+        pass
+
+    def trade_routes(self):
+        # Logic for managing trade routes
+        pass
+
+    def amethyst_capital(self):
+        # Logic for managing the main fund
+        pass
+
+# Example of using the integrated model
+global_analysis = GlobalAnalysisOfInterNetworkSynergy()
+global_analysis.vault()
+global_analysis.trade_routes()
+global_analysis.amethyst_capital()
+
+class GlobalAnalysisOfInterNetworkSynergy:
+    def __init__(self):
+        self.blockchain = Blockchain()
+        self.vault = Vault(initial_capital=30e9, target_return=0.80, transaction_margin=0.055)
+        self.trade_routes = TradeRoutes()
+
+    def vault(self):
+        # Logic for consolidating assets
+        pass
+
+    def trade_routes(self):
+        # Logic for managing trade routes
+        pass
+
+    def amethyst_capital(self):
+        # Logic for managing the main fund
+        pass
+
+    def monitor_crypto_markets(self, crypto_data):
+        # Real-time market monitoring logic
+        pass
+
+    def execute_large_volume_trades(self, trades):
+        # Execute large volume trades to influence market liquidity
+        for trade in trades:
+            self.vault.add_transaction(trade['sender'], trade['recipient'], trade['amount'])
+
+    def control_liquidity(self, inflows, outflows):
+        # Logic to control market liquidity
+        for inflow, outflow in zip(inflows, outflows):
+            net_flow = inflow - outflow
+            if net_flow > 0:
+                self.vault.capital += net_flow
+            else:
+                self.vault.capital -= abs(net_flow)
+
+# Example usage
+global_analysis = GlobalAnalysisOfInterNetworkSynergy()
+crypto_data = pd.DataFrame()  # Replace with actual crypto market data
+global_analysis.monitor_crypto_markets(crypto_data)
+trades = [{'sender': 'market', 'recipient': 'vault', 'amount': 1e9}]  # Example trades
+global_analysis.execute_large_volume_trades(trades)
+inflows = [1e9, 2e9]  # Example inflows
+outflows = [0.5e9, 1.5e9]  # Example outflows
+global_analysis.control_liquidity(inflows, outflows)
+
+import pandas as pd
+
+# Sample data for demonstration
+data = {
+    'Country': ['USA', 'China', 'Japan', 'Germany', 'UK', 'South Korea', 'Canada', 'France', 'India', 'Brazil'],
+    'Inflows': [500, 400, 300, 200, 150, 100, 90, 80, 70, 60],
+    'Outflows': [450, 380, 290, 190, 140, 95, 85, 75, 65, 55]
+}
+
+df = pd.DataFrame(data)
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Set up the matplotlib figure
+plt.figure(figsize=(10, 8))
+
+# Create a pivot table to facilitate heat map creation
+pivot_table = df.pivot("Country", "Inflows", "Outflows")
+
+# Draw a heatmap with the numeric values in each cell
+sns.heatmap(pivot_table, annot=True, fmt="d", linewidths=.5, cmap="YlGnBu")
+
+plt.title("Cryptocurrency Inflows and Outflows Heatmap")
+plt.xlabel("Inflows")
+plt.ylabel("Country")
+
+plt.show()
+
+import folium
+from folium.plugins import HeatMap
+
+# Sample geographical data with inflows and outflows
+geo_data = {
+    'Country': ['USA', 'China', 'Japan', 'Germany', 'UK', 'South Korea', 'Canada', 'France', 'India', 'Brazil'],
+    'Latitude': [37.0902, 35.8617, 36.2048, 51.1657, 55.3781, 35.9078, 56.1304, 46.6034, 20.5937, -14.2350],
+    'Longitude': [-95.7129, 104.1954, 138.2529, 10.4515, -3.4360, 127.7669, -106.3468, 1.8883, 78.9629, -51.9253],
+    'Inflows': [500, 400, 300, 200, 150, 100, 90, 80, 70, 60],
+    'Outflows': [450, 380, 290, 190, 140, 95, 85, 75, 65, 55]
+}
+
+geo_df = pd.DataFrame(geo_data)
+
+# Initialize the map centered around the world
+world_map = folium.Map(location=[0, 0], zoom_start=2)
+
+# Create a list of points with inflows and outflows
+heat_data = [
+    [row['Latitude'], row['Longitude'], row['Inflows']] for index, row in geo_df.iterrows()
+]
+
+# Add a heat map layer to the map
+HeatMap(heat_data).add_to(world_map)
+
+# Save the map as an HTML file or display it directly in a Jupyter Notebook
+world_map.save("global_crypto_heatmap.html")
+world_map
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import folium
+from folium.plugins import HeatMap
+
+# Define function to calculate ratios
+def calculate_ratios(data):
+    # Calculate import-export ratio (Trade Balance)
+    data['Import_Export_Ratio'] = (data['Imports'] - data['Exports']) / data['GDP']
+
+    # Calculate remittances-GDP ratio
+    data['Remittances_GDP_Ratio'] = data['Remittances'] / data['GDP']
+
+    # Calculate private capital-GDP ratio
+    data['Private_Capital_GDP_Ratio'] = data['Private_Capital_Inflows'] / data['GDP']
+
+    # Calculate FDI-GDP ratio
+    data['FDI_GDP_Ratio'] = data['FDI_Inflows'] / data['GDP']
+
+    return data
+
+# Load economic data (sample data for illustration)
+economic_data = pd.read_csv('/mnt/data/economic_data.csv')
+
+# Calculate ratios
+economic_data = calculate_ratios(economic_data)
+
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+# Function to process live data streams and identify undiscovered market segments
+def discover_market_segments(live_data):
+    # Example: Perform sentiment analysis
+    analyzer = SentimentIntensityAnalyzer()
+    live_data['sentiment'] = live_data['text'].apply(lambda x: analyzer.polarity_scores(x)['compound'])
+
+    # Identify top market segments with growth potential
+    promising_segments = live_data.groupby('Segment')['sentiment'].mean().nlargest(5).index.tolist()
+
+    return promising_segments
+
+# Load live data streams (sample data for illustration)
+live_data_streams = pd.read_csv('/mnt/data/live_data_streams.csv')  # Sample live data streams
+promising_segments = discover_market_segments(live_data_streams)
+
+# Function to simulate investment based on promising market segments
+def simulate_investment(promising_segments):
+    # Allocate investment across promising market segments based on risk and ownership goals
+    investment_allocation = {}
+    total_investment = 1000000000000  # Total investment amount (in USD)
+
+    for segment in promising_segments:
+        ownership_percentage = np.random.uniform(0.59, 0.88)  # Ownership percentage goal
+        segment_investment = total_investment * ownership_percentage
+        investment_allocation[segment] = segment_investment
+
+    return investment_allocation
+
+# Simulate investment strategy
+investment_allocation = simulate_investment(promising_segments)
+
+# Print investment allocation
+for segment, investment in investment_allocation.items():
+    print(f"Invest {investment:.2f} USD in market segment: {segment}")
+
+# Sample geographical data with inflows and outflows
+geo_data = {
+    'Country': ['USA', 'China', 'Japan', 'Germany', 'UK', 'South Korea', 'Canada', 'France', 'India', 'Brazil'],
+    'Latitude': [37.0902, 35.8617, 36.2048, 51.1657, 55.3781, 35.9078, 56.1304, 46.6034, 20.5937, -14.2350],
+    'Longitude': [-95.7129, 104.1954, 138.2529, 10.4515, -3.4360, 127.7669, -106.3468, 1.8883, 78.9629, -51.9253],
+    'Inflows': [500, 400, 300, 200, 150, 100, 90, 80, 70, 60],
+    'Outflows': [450, 380, 290, 190, 140, 95, 85, 75, 65, 55]
+}
+
+geo_df = pd.DataFrame(geo_data)
+
+# Initialize the map centered around the world
+world_map = folium.Map(location=[0, 0], zoom_start=2)
+
+# Create a list of points with inflows and outflows
+heat_data = [
+    [row['Latitude'], row['Longitude'], row['Inflows'] - row['Outflows']] for index, row in geo_df.iterrows()
+]
+
+# Add a heat map layer to the map
+HeatMap(heat_data).add_to(world_map)
+
+# Save the map as an HTML file or display it directly in a Jupyter Notebook
+world_map.save("global_crypto_heatmap.html")
+world_map
+
+# Function to visualize sector-wise investments
+def Sectors(sector_investment_data):
+    # Plot sector-wise investments
+    plt.figure(figsize=(10, 6))
+    plt.bar(sector_investment_data['Sector'], sector_investment_data['Investment'], color='skyblue')
+    plt.xlabel('Sector')
+    plt.ylabel('Investment Amount ($)')
+    plt.title('Sector-wise Investment Allocations')
+    plt.xticks(rotation=45)
+    plt.show()
+
+# Sample sector-wise investment data
+sector_investment_data = {
+    'Sector': ['Infrastructure', 'Technology', 'Healthcare', 'Energy', 'Finance'],
+    'Investment': [300000, 200000, 150000, 100000, 50000]
+}
+
+sector_investment_df = pd.DataFrame(sector_investment_data)
+
+# Call the Sectors function to visualize the data
+Sectors(sector_investment_df)
+
+# Sample geographical data with inflows and outflows
+geo_data = {
+    'Country': ['USA', 'China', 'Japan', 'Germany', 'UK', 'South Korea', 'Canada', 'France', 'India', 'Brazil'],
+    'Latitude': [37.0902, 35.8617, 36.2048, 51.1657, 55.3781, 35.9078, 56.1304, 46.6034, 20.5937, -14.2350],
+    'Longitude': [-95.7129, 104.1954, 138.2529, 10.4515, -3.4360, 127.7669, -106.3468, 1.8883, 78.9629, -51.9253],
+    'Inflows': [500, 400, 300, 200, 150, 100, 90, 80, 70, 60],
+    'Outflows': [450, 380, 290, 190, 140, 95, 85, 75, 65, 55]
+}
+
+geo_df = pd.DataFrame(geo_data)
+
+# Initialize the map centered around the world
+world_map = folium.Map(location=[0, 0], zoom_start=2)
+
+# Create a list of points with inflows and outflows
+heat_data = [
+    [row['Latitude'], row['Longitude'], row['Inflows'] - row['Outflows']] for index, row in geo_df.iterrows()
+]
+
+# Add a heat map layer to the map
+HeatMap(heat_data).add_to(world_map)
+
+# Save the map as an HTML file or display it directly in a Jupyter Notebook
+world_map.save("global_crypto_heatmap.html")
+world_map
+
+def Human Capital(deficit, network_capacity_data):
+    initial_investment = 1  # Start with $1.00
+    compounded_value = initial_investment
+    periods = 10  # Number of compounding periods (e.g., 10 years)
+    
+    # Calculate compounding economic value per region
+    for period in range(periods):
+        compounded_value = (compounded_value - deficit) * (1 + np.array(network_capacity_data['Economic Gains per $1.00']))
+    
+    network_capacity_data['Compounded Value'] = compounded_value
+    network_capacity_data['Human Capital Value'] = network_capacity_data['Compounded Value'] * network_capacity_data['Network Size']
+    
+    # Plot network capacity as a bubble chart
+    plt.figure(figsize=(10, 8))
+    plt.scatter(network_capacity_data['Region'], network_capacity_data['Compounded Value'],
+                s=network_capacity_data['Network Size']*100, alpha=0.5, c='skyblue', edgecolors='b')
+    
+    plt.title('Network Capacity as a Blockchain')
+    plt.xlabel('Region')
+    plt.ylabel('Compounded Economic Value per $1.00')
+    plt.grid(True)
+    plt.show()
+    
+    return network_capacity_data
+
+# Sample data for network capacity (region, economic gains per transactional value, network size)
+network_capacity_data = {
+    'Region': ['USA', 'China', 'India', 'Europe', 'Africa', 'Latin America'],
+    'Economic Gains per $1.00': [0.000427, 0.000315, 0.000255, 0.000380, 0.000200, 0.000150],
+    'Network Size': [500, 400, 300, 350, 200, 150]  # Bubble size represents network size
+}
+
+network_capacity_df = pd.DataFrame(network_capacity_data)
+
+# Call the Human Capital function with a deficit of $10,000
+Human_Capital_Data = Human Capital(deficit=10000, network_capacity_data=network_capacity_df)
+
+# Print Human Capital Data
+print(Human_Capital_Data)
+
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
+
+# Function to simulate bond price action for infrastructure deployments
+def simulate_bond_prices(start_date, periods, initial_price, growth_rate=0.05):
+    dates = [start_date + timedelta(days=30 * i) for i in range(periods)]
+    prices = [initial_price * (1 + growth_rate) ** i for i in range(periods)]
+    
+    bond_price_data = pd.DataFrame({'Date': dates, 'Open Price': prices})
+    return bond_price_data
+
+# Function to visualize bond price action
+def visualize_bond_prices(bond_price_data):
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=bond_price_data['Date'], y=bond_price_data['Open Price'], mode='lines+markers',
+                             name='Infrastructure Bond Open Price'))
+
+    fig.update_layout(title='Infrastructure Bond Open Price Action',
+                      xaxis_title='Date', yaxis_title='Open Price ($)',
+                      template='plotly_dark')
+
+    fig.show()
+
+# Function 2DI for infrastructure bond deployments
+def 2DI(start_date_str, periods, initial_price, growth_rate=0.05):
+    start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+    bond_price_data = simulate_bond_prices(start_date, periods, initial_price, growth_rate)
+    visualize_bond_prices(bond_price_data)
+
+# Example usage
+2DI('2025-02-21', 100, 100)
+
+def Market_Indexs(tickers, start_date, end_date):
+    market_data = fetch_market_data(tickers, start_date, end_date)
+    
+    # Consolidate trading volume
+    volume_data = market_data['Volume'].dropna(how='all').fillna(0)
+    volume_data['Total Volume'] = volume_data.sum(axis=1)
+
+    # Visualize trading volumes
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=volume_data.index, y=volume_data['Total Volume'], mode='lines',
+                             name='Total Trading Volume'))
+
+    fig.update_layout(title='Consolidated Global Trading Volume',
+                      xaxis_title='Date', yaxis_title='Volume',
+                      template='plotly_dark')
+
+    fig.show()
+
+    return volume_data
